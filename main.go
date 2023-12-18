@@ -3,10 +3,22 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
+
+var deselected = lipgloss.NewStyle().
+    Foreground(lipgloss.Color("#000000")).
+    Background(lipgloss.Color("#ffffff")).
+	Width(CellWidth).
+	PaddingLeft(1)
+
+var selected = lipgloss.NewStyle().
+    Foreground(lipgloss.Color("#ffffff")).
+    Background(lipgloss.Color("#000000")).
+	Width(CellWidth).
+	PaddingLeft(1)
 
 const (
 	Rows      = 10
@@ -81,23 +93,22 @@ func (g grid) View() string {
 	s := ""
 	cellContent := ""
 	for row := 0; row < Rows; row++ {
-		s += "\n+" + strings.Repeat("-", Cols*CellWidth-2) + "+\n"
+		s += "\n"
 		for col := 0; col < Cols; col++ {
 
-			cellContent = fmt.Sprintf("%-*s", CellWidth, " ")
+			cellContent = ""
 			for _, cell := range g.cells {
 				if row == cell.row && col == cell.col {
-					cellContent = fmt.Sprintf("%-*s", CellWidth, cell.content)
+					cellContent = cell.content
 				}
 			}
 
 			if row == g.row && col == g.col {
-				s += "|>"
+				s += selected.Render(cellContent)
 			} else {
-				s += "| "
+				s += deselected.Render(cellContent)
 			}
 
-			s += cellContent
 			cellContent = ""
 		}
 	}
