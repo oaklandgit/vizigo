@@ -70,8 +70,6 @@ type cell struct {
 	content  string
 }
 
-
-
 func main() {
 	p := tea.NewProgram(initialGrid())
 	if _, err := p.Run(); err != nil {
@@ -90,13 +88,11 @@ func initialGrid() grid {
 
 	return grid{
 		cells: map[position]cell{
-			{row: 0, col: 0}: {content: "A1"},
-			{row: 0, col: 1}: {content: "B1"},
-			{row: 0, col: 2}: {content: "C1"},
-			{row: 0, col: 3}: {content: "D1"},
-			{row: 0, col: 4}: {content: "E1"},
+			{row: 1, col: 1}: {content: "Hello"},
+			{row: 1, col: 2}: {content: "Goodbye"},
+			{row: 4, col: 4}: {content: "Monday"},
 		},
-		cursor: position{row: 0, col: 0},
+		cursor: position{row: 1, col: 1},
 	}
 }
 
@@ -122,7 +118,7 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "up":
-			if g.cursor.row > 0 {
+			if g.cursor.row > 1 {
 				g.cursor.row--
 			}
 		case "down":
@@ -130,7 +126,7 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				g.cursor.row++
 			}
 		case "left":
-			if g.cursor.col > 0 {
+			if g.cursor.col > 1 {
 				g.cursor.col--
 			}
 		case "right":
@@ -172,11 +168,11 @@ func solve(s string) string {
 func (g grid) View() string {
 	s := ""
 	cellContent := ""
-	alpha := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	alpha := "_ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 	// header
 	s += "\n" + trDeselected.Render("")
-	for col := 0; col < Cols; col++ {
+	for col := 1; col < Cols; col++ {
 		if col == g.cursor.col {
 			s += thSelected.Render(string(alpha[col]))
 		} else {
@@ -184,7 +180,8 @@ func (g grid) View() string {
 		}
 	}
 
-	for row := 0; row < Rows; row++ {
+	// rows start at 1
+	for row := 1; row < Rows; row++ {
 
 		// newline
 		s += "\n"
@@ -197,7 +194,7 @@ func (g grid) View() string {
 		}
 		
 
-		for col := 0; col < Cols; col++ {
+		for col := 1; col < Cols; col++ {
 
 			cellContent = ""
 
