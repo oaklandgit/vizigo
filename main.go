@@ -10,9 +10,12 @@ import (
 )
 
 const (
-	Rows      = 10
-	Cols      = 6
-	CellWidth = 12
+	Rows      = 8
+	Cols      = 10
+	HOffset = 1
+	VOffset = 1
+	ColWidth = 12
+	FirstColWidth = 3
 	Orange = "#fcb826"
 	Gray = "#363535"
 )
@@ -22,35 +25,35 @@ var clipboard string
 var thDeselected = lipgloss.NewStyle().
     Foreground(lipgloss.Color(Gray)).
     Background(lipgloss.Color(Orange)).
-	Width(CellWidth).
+	Width(ColWidth).
 	Align(lipgloss.Center)
 
 var thSelected = lipgloss.NewStyle().
     Foreground(lipgloss.Color(Orange)).
     Background(lipgloss.Color(Gray)).
-	Width(CellWidth).
+	Width(ColWidth).
 	Align(lipgloss.Center)
 
 var trDeselected = lipgloss.NewStyle().
     Foreground(lipgloss.Color(Gray)).
     Background(lipgloss.Color(Orange)).
-	Width(5).
+	Width(FirstColWidth).
 	Align(lipgloss.Center)
 
 var trSelected = lipgloss.NewStyle().
     Foreground(lipgloss.Color(Orange)).
     Background(lipgloss.Color(Gray)).
-	Width(5).
+	Width(FirstColWidth).
 	Align(lipgloss.Center)
 
 var cursorSelected = lipgloss.NewStyle().
     Foreground(lipgloss.Color("#000000")).
     Background(lipgloss.Color(Orange)).
-	Width(CellWidth).
+	Width(ColWidth).
 	PaddingLeft(1)
 
 var cursorDeselected = lipgloss.NewStyle().
-	Width(CellWidth).
+	Width(ColWidth).
 	PaddingLeft(1)
 
 var blue = lipgloss.NewStyle().
@@ -98,6 +101,16 @@ func initialGrid() grid {
 
 func (g grid) Init() tea.Cmd {
 	return nil
+}
+
+func intToLetters(n int) string {
+	var result string
+	for n > 0 {
+		remainder := (n - 1) % 26
+		result = string('A' + remainder) + result
+		n = (n - 1) / 26
+	}
+	return result
 }
 
 func getCellContent(g grid, p position) string {
@@ -168,20 +181,22 @@ func solve(s string) string {
 func (g grid) View() string {
 	s := ""
 	cellContent := ""
-	alpha := "_ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	// alpha := "_ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 	// header
-	s += "\n" + trDeselected.Render("")
-	for col := 1; col < Cols; col++ {
+	s += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
+	for col := HOffset; col < Cols; col++ {
 		if col == g.cursor.col {
-			s += thSelected.Render(string(alpha[col]))
+			// s += thSelected.Render(string(alpha[col]))
+			s += thSelected.Render(intToLetters(col))
 		} else {
-			s += thDeselected.Render(string(alpha[col]))
+			// s += thDeselected.Render(string(alpha[col]))
+			s += thDeselected.Render(intToLetters(col))
 		}
 	}
 
 	// rows start at 1
-	for row := 1; row < Rows; row++ {
+	for row := VOffset; row < Rows; row++ {
 
 		// newline
 		s += "\n"
@@ -194,7 +209,7 @@ func (g grid) View() string {
 		}
 		
 
-		for col := 1; col < Cols; col++ {
+		for col := HOffset; col < Cols; col++ {
 
 			cellContent = ""
 
