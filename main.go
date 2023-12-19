@@ -9,15 +9,47 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+const (
+	Rows      = 10
+	Cols      = 6
+	CellWidth = 12
+	Orange = "#fcb826"
+	Gray = "#363535"
+)
+
 var clipboard string
 
-var selected = lipgloss.NewStyle().
+var thDeselected = lipgloss.NewStyle().
+    Foreground(lipgloss.Color(Gray)).
+    Background(lipgloss.Color(Orange)).
+	Width(CellWidth).
+	Align(lipgloss.Center)
+
+var thSelected = lipgloss.NewStyle().
+    Foreground(lipgloss.Color(Orange)).
+    Background(lipgloss.Color(Gray)).
+	Width(CellWidth).
+	Align(lipgloss.Center)
+
+var trDeselected = lipgloss.NewStyle().
+    Foreground(lipgloss.Color(Gray)).
+    Background(lipgloss.Color(Orange)).
+	Width(5).
+	Align(lipgloss.Center)
+
+var trSelected = lipgloss.NewStyle().
+    Foreground(lipgloss.Color(Orange)).
+    Background(lipgloss.Color(Gray)).
+	Width(5).
+	Align(lipgloss.Center)
+
+var cursorSelected = lipgloss.NewStyle().
     Foreground(lipgloss.Color("#000000")).
-    Background(lipgloss.Color("#FFFFFF")).
+    Background(lipgloss.Color(Orange)).
 	Width(CellWidth).
 	PaddingLeft(1)
 
-var deselected = lipgloss.NewStyle().
+var cursorDeselected = lipgloss.NewStyle().
     Foreground(lipgloss.Color("#FFFFFF")).
     Background(lipgloss.Color("#000000")).
 	Width(CellWidth).
@@ -32,11 +64,7 @@ var green = lipgloss.NewStyle().
 var red = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("#FF0000"))
 
-const (
-	Rows      = 10
-	Cols      = 6
-	CellWidth = 12
-)
+
 
 type cell struct {
 	content  string
@@ -76,29 +104,6 @@ func (g grid) Init() tea.Cmd {
 	return nil
 }
 
-// func sameCell(a, b cell) bool {
-// 	return a.row == b.row && a.col == b.col
-// }
-
-// func setCell(g grid, row, col int, content string) {
-// 	for _, c := range g.cells {
-// 		if row == c.row && col == c.col {
-// 			c.content = content
-// 		}
-// 	}
-
-// 	return g
-// }
-
-// func getCell(row, col int, cells *[]cell) *cell {
-// 	for _, cell := range cells {
-// 		if row == cell.row && col == cell.col {
-// 			return &cell
-// 		}
-// 	}
-// 	return &cell{}
-// }
-
 func getCellContent(row, col int, cells []cell) string {
 	for _, cell := range cells {
 		if row == cell.row && col == cell.col {
@@ -131,7 +136,7 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				g.row--
 			}
 		case "down":
-			if g.row < Rows {
+			if g.row < Rows - 1 {
 				g.row++
 			}
 		case "left":
@@ -139,7 +144,7 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				g.col--
 			}
 		case "right":
-			if g.col < Cols {
+			if g.col < Cols - 1 {
 				g.col++
 			}
 		case "ctrl+c":
@@ -176,8 +181,28 @@ func solve(s string) string {
 func (g grid) View() string {
 	s := ""
 	cellContent := ""
+	alpha := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	// header
+	s += "\n" + trDeselected.Render("")
+	for col := 0; col < Cols; col++ {
+		if col == g.col {
+			s += thSelected.Render(string(alpha[col]))
+		} else {
+			s += thDeselected.Render(string(alpha[col]))
+		}
+	}
+
 	for row := 0; row < Rows; row++ {
-		s += "\n"
+
+		// row number
+		if row == g.row {
+			s += trSelected.Render(fmt.Sprintf("\n%d", row))
+		} else {
+			s += trDeselected.Render(fmt.Sprintf("\n%d", row))
+		}
+		
+
 		for col := 0; col < Cols; col++ {
 
 			cellContent = ""
@@ -188,9 +213,9 @@ func (g grid) View() string {
 			}
 
 			if row == g.row && col == g.col {
-				s += selected.Render(cellContent)
+				s += cursorSelected.Render(cellContent)
 			} else {
-				s += deselected.Render(cellContent)
+				s += cursorDeselected.Render(cellContent)
 			}
 
 			cellContent = ""
