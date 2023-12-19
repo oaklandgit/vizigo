@@ -50,8 +50,6 @@ var cursorSelected = lipgloss.NewStyle().
 	PaddingLeft(1)
 
 var cursorDeselected = lipgloss.NewStyle().
-    Foreground(lipgloss.Color("#FFFFFF")).
-    Background(lipgloss.Color("#000000")).
 	Width(CellWidth).
 	PaddingLeft(1)
 
@@ -153,9 +151,10 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+v":
 			setCellContent(&g, g.row, g.col, clipboard)
 			
-		case "q":
+		case "ctrl+x":
 			return g, tea.Quit
 		}
+		
 	}
 
 	return g, nil
@@ -195,17 +194,21 @@ func (g grid) View() string {
 
 	for row := 0; row < Rows; row++ {
 
+		// newline
+		s += "\n"
+
 		// row number
 		if row == g.row {
-			s += trSelected.Render(fmt.Sprintf("\n%d", row))
+			s += trSelected.Render(fmt.Sprintf("%d", row))
 		} else {
-			s += trDeselected.Render(fmt.Sprintf("\n%d", row))
+			s += trDeselected.Render(fmt.Sprintf("%d", row))
 		}
 		
 
 		for col := 0; col < Cols; col++ {
 
 			cellContent = ""
+
 			for _, cell := range g.cells {
 				if row == cell.row && col == cell.col {
 					cellContent = solve(cell.content)
@@ -221,6 +224,9 @@ func (g grid) View() string {
 			cellContent = ""
 		}
 	}
+
+	s += "\n\nmove: → ← ↑ ↓, copy: ⌃c, paste: ⌃v, save: ⌃s, exit: ⌃x\n\n"
+	s += fmt.Sprintln(g)
 
 	return s
 }
