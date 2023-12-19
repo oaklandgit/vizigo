@@ -62,17 +62,15 @@ var green = lipgloss.NewStyle().
 var red = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("#FF0000"))
 
-
+type position struct {
+	row, col int
+}
 
 type cell struct {
 	content  string
-	row, col int
 }
 
-type grid struct {
-	cells    []cell
-	row, col int
-}
+
 
 func main() {
 	p := tea.NewProgram(initialGrid())
@@ -82,19 +80,23 @@ func main() {
 	}
 }
 
+
+type grid struct {
+	cells map[position]cell
+	cursor position
+}
+
 func initialGrid() grid {
+
 	return grid{
-		row: 0,
-		col: 0,
-		cells: []cell{
-			{content: "hello", row: 0, col: 0},
-			{content: "goodbye", row: 0, col: 1},
-			{content: "morning", row: 0, col: 2},
-			{content: "noon", row: 0, col: 3},
-			{content: "123", row: 1, col: 0},
-			{content: "456", row: 2, col: 0},
-			{content: "=sum(A1:A2)", row: 3, col: 0},
+		cells: map[position]cell{
+			{row: 0, col: 0}: {content: "A1"},
+			{row: 0, col: 1}: {content: "B1"},
+			{row: 0, col: 2}: {content: "C1"},
+			{row: 0, col: 3}: {content: "D1"},
+			{row: 0, col: 4}: {content: "E1"},
 		},
+		cursor: position{row: 0, col: 0},
 	}
 }
 
@@ -102,27 +104,17 @@ func (g grid) Init() tea.Cmd {
 	return nil
 }
 
-func getCellContent(row, col int, cells []cell) string {
-	for _, cell := range cells {
-		if row == cell.row && col == cell.col {
+func getCellContent(g grid, p position) string {
+	for pos, cell := range g.cells {
+		if pos == p {
 			return cell.content
 		}
 	}
 	return ""
 }
 
-func setCellContent(g *grid, row int, col int, content string) {
-	// replace if cell already exists
-	for i, cell := range g.cells {
-		if row == cell.row && col == cell.col {
-			g.cells[i].content = content
-			return
-		}
-	}
-
-	// otherwise append
-	g.cells = append(g.cells, cell{content: content, row: row, col: col})
-
+func setCellContent(g *grid, p position, content string) {
+	g.cells[p] = cell{content: content}
 }
 
 func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -130,26 +122,26 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "up":
-			if g.row > 0 {
-				g.row--
+			if g.cursor.row > 0 {
+				g.cursor.row--
 			}
 		case "down":
-			if g.row < Rows - 1 {
-				g.row++
+			if g.cursor.row < Rows - 1 {
+				g.cursor.row++
 			}
 		case "left":
-			if g.col > 0 {
-				g.col--
+			if g.cursor.col > 0 {
+				g.cursor.col--
 			}
 		case "right":
-			if g.col < Cols - 1 {
-				g.col++
+			if g.cursor.col < Cols - 1 {
+				g.cursor.col++
 			}
 		case "ctrl+c":
-			clipboard = getCellContent(g.row, g.col, g.cells)
+			clipboard = getCellContent(g, g.cursor)
 
 		case "ctrl+v":
-			setCellContent(&g, g.row, g.col, clipboard)
+			setCellContent(&g, g.cursor, clipboard)
 			
 		case "ctrl+x":
 			return g, tea.Quit
@@ -185,7 +177,7 @@ func (g grid) View() string {
 	// header
 	s += "\n" + trDeselected.Render("")
 	for col := 0; col < Cols; col++ {
-		if col == g.col {
+		if col == g.cursor.col {
 			s += thSelected.Render(string(alpha[col]))
 		} else {
 			s += thDeselected.Render(string(alpha[col]))
@@ -198,7 +190,7 @@ func (g grid) View() string {
 		s += "\n"
 
 		// row number
-		if row == g.row {
+		if row == g.cursor.row {
 			s += trSelected.Render(fmt.Sprintf("%d", row))
 		} else {
 			s += trDeselected.Render(fmt.Sprintf("%d", row))
@@ -209,13 +201,16 @@ func (g grid) View() string {
 
 			cellContent = ""
 
-			for _, cell := range g.cells {
-				if row == cell.row && col == cell.col {
+			for pos, cell := range g.cells {
+				p := position{row: row, col: col}
+				if pos == p {
 					cellContent = solve(cell.content)
 				}
 			}
 
-			if row == g.row && col == g.col {
+			p := position{row: row, col: col}
+
+			if g.cursor == p {
 				s += cursorSelected.Render(cellContent)
 			} else {
 				s += cursorDeselected.Render(cellContent)
@@ -226,7 +221,7 @@ func (g grid) View() string {
 	}
 
 	s += "\n\nmove: → ← ↑ ↓, copy: ⌃c, paste: ⌃v, save: ⌃s, exit: ⌃x\n\n"
-	s += fmt.Sprintln(g)
+	// s += fmt.Sprintln(g)
 
 	return s
 }
