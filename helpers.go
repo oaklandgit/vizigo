@@ -11,12 +11,7 @@ func IntToLetters(n int) string {
 }
 
 func GetCellContent(g Grid, p Position) string {
-	for pos, cell := range g.cells {
-		if pos == p {
-			return cell.content
-		}
-	}
-	return ""
+	return g.cells[p].content
 }
 
 func SetCellContent(g *Grid, p Position, content string) {
