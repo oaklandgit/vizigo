@@ -8,8 +8,8 @@ func (g Grid) View() string {
 
 	// status bar
 	s += fmt.Sprintf("\n%s%d [%s]",
-		IntToLetters(g.cursor.row),
-		g.cursor.col,
+		IntToLetters(g.cursor.col),
+		g.cursor.row,
 		GetCellContent(g, g.cursor))
 
 	// header
