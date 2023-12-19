@@ -6,6 +6,9 @@ func (g Grid) View() string {
 	s := ""
 	cellContent := ""
 
+	// status bar
+	s += fmt.Sprintf("\n%s%d [%s]", IntToLetters(g.cursor.row), g.cursor.col, GetCellContent(g, g.cursor))
+
 	// header
 	s += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
 	for col := HOffset; col < Cols; col++ {
@@ -51,7 +54,8 @@ func (g Grid) View() string {
 		}
 	}
 
-	s += "\n\nmove: → ← ↑ ↓, copy: ⌃c, paste: ⌃v, save: ⌃s, exit: ⌃x\n\n"
+	
+	s += "\n\n" + HelpText
 
 	return s
 }

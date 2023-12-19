@@ -9,4 +9,5 @@ const (
 	FirstColWidth = 3
 	Orange = "#fcb826"
 	Gray = "#363535"
+	HelpText = "move: → ← ↑ ↓, copy: ⌃c, paste: ⌃v, save: ⌃s, exit: ⌃x"
 )
