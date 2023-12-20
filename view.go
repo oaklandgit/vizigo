@@ -7,18 +7,17 @@ func (g Grid) View() string {
 	cellContent := ""
 
 	// status bar
-	s += fmt.Sprintf("\n%s%d [%s]",
-		IntToLetters(g.cursor.col),
-		g.cursor.row,
+	s += fmt.Sprintf("\n%s [%s]",
+		g.cursor.ToString(),
 		GetCellContent(g, g.cursor))
 
 	// header
 	s += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
 	for col := HOffset; col < Cols; col++ {
 		if col == g.cursor.col {
-			s += ThSelected.Render(IntToLetters(col))
+			s += ThSelected.Render(ColumnToLetters(col))
 		} else {
-			s += ThDeselected.Render(IntToLetters(col))
+			s += ThDeselected.Render(ColumnToLetters(col))
 		}
 	}
 
