@@ -1,20 +1,44 @@
 package main
 
-import "strconv"
+import (
+	"math"
+	"regexp"
+	"strconv"
+)
 
-func Solver(s string) string {
 
-	// formula
-	if s[0] == '=' {
-		return Red.Render(s)
+func (g *Grid) Compute(s string) string {
+
+	pattern := `=([A-Z]+)\(([A-Z]+\d+):([A-Z]+\d+)\)`
+	re := regexp.MustCompile(pattern)
+	matches := re.FindStringSubmatch(s)
+
+	if matches == nil {
+		return s
 	}
 
-	// number
-	if _, err := strconv.Atoi(s); err == nil {
-		return Green.Render(s)
+
+	startCell := matches[2]
+	endCell := matches[3]
+
+	operand1, _ := strconv.ParseFloat(g.CellFromString(startCell).content, 64)
+	operand2, _ := strconv.ParseFloat(g.CellFromString(endCell).content, 64)
+
+	result := 0.0
+
+	switch matches[1] {
+	case "SUM":
+		result = operand1 + operand2
+	case "PROD":
+		result = operand1 * operand2
+	case "DIFF":
+		result = operand1 - operand2
+	case "MAX":
+		result = math.Max(operand1, operand2)
+	case "MIN":
+		result = math.Min(operand1, operand2)
 	}
 
-	// string
-	return Blue.Render(s)
-	
+	return strconv.FormatFloat(result, 'f', -1, 64)
+
 }

@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 func (g Grid) View() string {
 	s := ""
@@ -40,14 +43,16 @@ func (g Grid) View() string {
 			for pos, cell := range g.cells {
 				p := Position{row: row, col: col}
 				if pos == p {
-					cellContent = Solver(cell.content)
+					cellContent = g.Compute(cell.content)
 				}
 			}
 
 			p := Position{row: row, col: col}
 
-			if g.cursor == p {
+			if p == g.cursor {
 				s += CursorSelected.Render(cellContent)
+			} else if slices.Contains(g.selection, p){
+				s += Selected.Render(cellContent)
 			} else {
 				s += CursorDeselected.Render(cellContent)
 			}

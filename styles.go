@@ -3,32 +3,32 @@ package main
 import "github.com/charmbracelet/lipgloss"
 
 var ThDeselected = lipgloss.NewStyle().
-    Foreground(lipgloss.Color(Gray)).
-    Background(lipgloss.Color(Orange)).
+    Foreground(Black).
+    Background(Hilite).
 	Width(ColWidth).
 	Align(lipgloss.Center)
 
 var ThSelected = lipgloss.NewStyle().
-    Foreground(lipgloss.Color(Orange)).
-    Background(lipgloss.Color(Gray)).
+    Foreground(Hilite).
+    Background(Black).
 	Width(ColWidth).
 	Align(lipgloss.Center)
 
 var TrDeselected = lipgloss.NewStyle().
-    Foreground(lipgloss.Color(Gray)).
-    Background(lipgloss.Color(Orange)).
+    Foreground(Black).
+    Background(Hilite).
 	Width(FirstColWidth).
 	Align(lipgloss.Center)
 
 var TrSelected = lipgloss.NewStyle().
-    Foreground(lipgloss.Color(Orange)).
-    Background(lipgloss.Color(Gray)).
+    Foreground(Hilite).
+    Background(Black).
 	Width(FirstColWidth).
 	Align(lipgloss.Center)
 
 var CursorSelected = lipgloss.NewStyle().
-    Foreground(lipgloss.Color("#000000")).
-    Background(lipgloss.Color(Orange)).
+    Foreground(Black).
+    Background(Hilite).
 	Width(ColWidth).
 	PaddingLeft(1)
 
@@ -36,11 +36,7 @@ var CursorDeselected = lipgloss.NewStyle().
 	Width(ColWidth).
 	PaddingLeft(1)
 
-var Blue = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#0000FF"))
-
-var Green = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#00FF00"))
-
-var Red = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#FF0000"))
+var Selected = lipgloss.NewStyle().
+	Background(Black).
+	Width(ColWidth).
+	PaddingLeft(1)

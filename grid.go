@@ -5,6 +5,7 @@ import "strconv"
 type Grid struct {
 	cells map[Position]Cell
 	cursor Position
+	selection []Position
 }
 
 func (g *Grid) CellFromString(s string) Cell {
