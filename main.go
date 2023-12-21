@@ -27,18 +27,16 @@ func initialGrid() Grid {
 
 			{row: 4, col: 1}: {content: "Sum:"},
 			{row: 5, col: 1}: {content: "Product:"},
-			{row: 6, col: 1}: {content: "Difference:"},
-			{row: 7, col: 1}: {content: "Max:"},
-			{row: 8, col: 1}: {content: "Min:"},
+			{row: 6, col: 1}: {content: "Max:"},
+			{row: 7, col: 1}: {content: "Min:"},
 
 			{row: 1, col: 2}: {content: "12345"},
 			{row: 2, col: 2}: {content: "67890"},
 
 			{row: 4, col: 2}: {content: "=SUM(B1:B2)"},
-			{row: 5, col: 2}: {content: "=SUM(B1:B2)"},
-			{row: 6, col: 2}: {content: "=DIFF(B1:B2)"},
-			{row: 7, col: 2}: {content: "=MAX(B1:B2)"},
-			{row: 8, col: 2}: {content: "=M(B1:B2)"},
+			{row: 5, col: 2}: {content: "=PRODUCT(B1:B2)"},
+			{row: 6, col: 2}: {content: "=MAX(B1:B2)"},
+			{row: 7, col: 2}: {content: "=MIN(B1:B2)"},
 		},
 		cursor: Position{row: 1, col: 1},
 		selection: []Position{},
