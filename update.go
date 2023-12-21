@@ -10,7 +10,14 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			editMode = false
 		case "enter":
-			editMode = !editMode
+			if editMode {
+				editMode = false
+				if g.cursor.row < Rows - 1 {
+					g.cursor.row++
+				}
+			} else {
+				editMode = true
+			}
 		case "up":
 			editMode = false
 			if g.cursor.row > 1 {
