@@ -29,6 +29,8 @@ func initialGrid() Grid {
 			{row: 5, col: 1}: {content: "Product:"},
 			{row: 6, col: 1}: {content: "Max:"},
 			{row: 7, col: 1}: {content: "Min:"},
+			{row: 8, col: 1}: {content: "Average:"},
+			{row: 9, col: 1}: {content: "Count:"},
 
 			{row: 1, col: 2}: {content: "12345"},
 			{row: 2, col: 2}: {content: "67890"},
@@ -37,6 +39,8 @@ func initialGrid() Grid {
 			{row: 5, col: 2}: {content: "=PRODUCT(B1:B2)"},
 			{row: 6, col: 2}: {content: "=MAX(B1:B2)"},
 			{row: 7, col: 2}: {content: "=MIN(B1:B2)"},
+			{row: 8, col: 2}: {content: "=AVERAGE(B1:B2)"},
+			{row: 9, col: 2}: {content: "=COUNT(B1:B2)"},
 		},
 		cursor: Position{row: 1, col: 1},
 		selection: []Position{},

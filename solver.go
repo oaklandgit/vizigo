@@ -53,6 +53,10 @@ func (g *Grid) Compute(s string) string {
 		result = Max(operands)
 	case "MIN":
 		result = Min(operands)
+	case "AVERAGE":
+		result = Average(operands)
+	case "COUNT":
+		result = Count(operands)
 	}
 
 	return strconv.FormatFloat(result, 'f', -1, 64)

@@ -3,8 +3,8 @@ package main
 import "github.com/charmbracelet/lipgloss"
 
 const (
-	Rows      = 10
-	Cols      = 10
+	Rows      = 12
+	Cols      = 6
 	HOffset = 1
 	VOffset = 1
 	ColWidth = 12

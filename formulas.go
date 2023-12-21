@@ -35,3 +35,11 @@ func Min(operands []float64) float64 {
 	}
 	return min
 }
+
+func Average(operands []float64) float64 {
+	return Sum(operands) / float64(len(operands))
+}
+
+func Count(operands []float64) float64 {
+	return float64(len(operands))
+}
