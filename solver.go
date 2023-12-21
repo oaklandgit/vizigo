@@ -47,13 +47,13 @@ func (g *Grid) Compute(s string) string {
 	switch matches[1] {
 	case "SUM":
 		result = Sum(operands)
-	case "PRODUCT":
+	case "PROD":
 		result = Product(operands)
 	case "MAX":
 		result = Max(operands)
 	case "MIN":
 		result = Min(operands)
-	case "AVERAGE":
+	case "AVG":
 		result = Average(operands)
 	case "COUNT":
 		result = Count(operands)

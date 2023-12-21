@@ -7,13 +7,10 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "esc":
+			editMode = false
 		case "enter":
-			if editMode && g.cursor.row < Rows - 1 {
-				g.cursor.row++
-			}
-			if !editMode {
-				editMode = true
-			}
+			editMode = !editMode
 		case "up":
 			editMode = false
 			if g.cursor.row > 1 {
@@ -25,13 +22,11 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				g.cursor.row++
 			}
 		case "left":
-			editMode = false
-			if g.cursor.col > 1 {
+			if !editMode && g.cursor.col > 1 {
 				g.cursor.col--
 			}
 		case "right":
-			editMode = false
-			if g.cursor.col < Cols - 1 {
+			if !editMode && g.cursor.col < Cols - 1 {
 				g.cursor.col++
 			}
 		case "ctrl+c":
@@ -41,15 +36,15 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+v":
 			editMode = false
 			SetCellContent(&g, g.cursor, clipboard)
-			
-		
+
 		case "backspace":
 			if !editMode {
-				return g, nil
-			}
-			was := GetCellContent(g, g.cursor)
-			if len(was) > 0 {
-				SetCellContent(&g, g.cursor, was[:len(was)-1])
+				SetCellContent(&g, g.cursor, "")
+			} else {
+				was := GetCellContent(g, g.cursor)
+				if len(was) > 0 {
+					SetCellContent(&g, g.cursor, was[:len(was)-1])
+				}
 			}
 		case "ctrl+x":
 			return g, tea.Quit

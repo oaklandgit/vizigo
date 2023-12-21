@@ -9,10 +9,15 @@ func (g Grid) View() string {
 	cellContent := ""
 
 	// status bar
-	s += fmt.Sprintf("\n%s [%s]  Edit? %t",
+	mode := ""
+	if editMode {
+		mode = "EDIT "
+	}
+
+	s += fmt.Sprintf("\n%s%s %s",
+		mode,
 		g.cursor.ToString(),
 		GetCellContent(g, g.cursor),
-		editMode,
 	)
 
 	// header
