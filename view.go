@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"slices"
 )
 
 func (g Grid) View() string {
@@ -10,9 +9,11 @@ func (g Grid) View() string {
 	cellContent := ""
 
 	// status bar
-	s += fmt.Sprintf("\n%s [%s]",
+	s += fmt.Sprintf("\n%s [%s]  Edit? %t",
 		g.cursor.ToString(),
-		GetCellContent(g, g.cursor))
+		GetCellContent(g, g.cursor),
+		editMode,
+	)
 
 	// header
 	s += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
@@ -43,16 +44,23 @@ func (g Grid) View() string {
 			for pos, cell := range g.cells {
 				p := Position{row: row, col: col}
 				if pos == p {
-					cellContent = g.Compute(cell.content)
+
+					raw := cell.content
+
+					if p == g.cursor && editMode {
+						cellContent = fmt.Sprintf("%-*s", 3, raw)
+					} else {
+						cellContent = fmt.Sprintf("%-*s", 3, g.Compute(raw))
+					}
 				}
 			}
 
 			p := Position{row: row, col: col}
 
-			if p == g.cursor {
+			if p == g.cursor && !editMode {
 				s += CursorSelected.Render(cellContent)
-			} else if slices.Contains(g.selection, p){
-				s += Selected.Render(cellContent)
+			} else if p == g.cursor && editMode {
+				s += CursorEditMode.Render(cellContent)
 			} else {
 				s += CursorDeselected.Render(cellContent)
 			}

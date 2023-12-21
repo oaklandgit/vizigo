@@ -32,6 +32,12 @@ var CursorSelected = lipgloss.NewStyle().
 	Width(ColWidth).
 	PaddingLeft(1)
 
+var CursorEditMode = lipgloss.NewStyle().
+    Foreground(Black).
+    Background(White).
+	Width(ColWidth).
+	PaddingLeft(1)
+
 var CursorDeselected = lipgloss.NewStyle().
 	Width(ColWidth).
 	PaddingLeft(1)

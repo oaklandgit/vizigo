@@ -12,5 +12,6 @@ const (
 	Hilite = lipgloss.Color("72")
 	Gray = lipgloss.Color("243")
 	Black = lipgloss.Color("0")
-	HelpText = "move: → ← ↑ ↓, copy: ⌃c, paste: ⌃v, save: ⌃s, exit: ⌃x"
+	White = lipgloss.Color("15")
+	HelpText = "move: [→ ← ↑ ↓], edit: [enter], copy: [⌃c], paste: [⌃v], save: [⌃s], exit: [⌃x]"
 )
