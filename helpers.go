@@ -37,14 +37,6 @@ func LettersToColumn(s string) int {
 	return result
 }
 
-func GetCellContent(g *Grid, p Position) string {
-	return g.cells[p].content
-}
-
-func SetCellContent(g *Grid, p Position, content string) {
-	g.cells[p] = Cell{content: content}
-}
-
 func SplitAlphaNumeric(s string) (alphaPart string, numericPart string) {
     splitIndex := -1
     for i, char := range s {

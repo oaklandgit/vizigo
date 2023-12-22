@@ -19,7 +19,7 @@ func (g Grid) View() string {
 	rStr += fmt.Sprintf("\n%s%s %s",
 		mStr,
 		g.cursor.position.ToString(),
-		GetCellContent(&g, g.cursor.position),
+		g.cursor.position.GetCellContent(&g),
 	)
 
 	// header

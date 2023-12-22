@@ -7,8 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-// var clipboard string
-
 func main() {
 	p := tea.NewProgram(initialGrid())
 	if _, err := p.Run(); err != nil {

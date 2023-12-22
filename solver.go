@@ -12,7 +12,7 @@ func collectOperands(g *Grid, startRow, startCol, endRow, endCol int) []float64 
 	for row := startRow; row <= endRow; row++ {
 		for col := startCol; col <= endCol; col++ {
 			p := Position{row: row, col: col}
-			content := GetCellContent(g, p)
+			content := p.GetCellContent(g)
 			
 			value, _ := strconv.ParseFloat(content, 64) 	
 			operands = append(operands, value)

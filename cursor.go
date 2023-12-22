@@ -9,11 +9,11 @@ type Cursor struct {
 
 func (c *Cursor) backspace(g *Grid) {
 	if c.editMode {
-		SetCellContent(g, c.position, "")
+		c.position.SetCellContent(g, "")
 	} else {
-		was := GetCellContent(g, c.position)
+		was := c.position.GetCellContent(g)
 		if len(was) > 0 {
-			SetCellContent(g, g.cursor.position, was[:len(was)-1])
+			c.position.SetCellContent(g, was[:len(was)-1])
 			g.cursor.editIndex--
 		}
 	}
@@ -21,12 +21,12 @@ func (c *Cursor) backspace(g *Grid) {
 
 func (c *Cursor) Copy(g *Grid) {
 	c.editMode = false
-	c.clipboard = GetCellContent(g, c.position)
+	c.clipboard = c.position.GetCellContent(g)
 }
 
 func (c *Cursor) Paste(g *Grid) {
 	c.editMode = false
-	SetCellContent(g, c.position, c.clipboard)
+	c.position.SetCellContent(g, c.clipboard)
 }
 
 func (c *Cursor) ToggleEditMode() {
@@ -73,29 +73,22 @@ func (c *Cursor) Right() {
 	}
 }
 
-// if !g.cursor.editMode {
-// 	return g, nil
-// }
-// was := GetCellContent(&g, g.cursor.position)
-// SetCellContent(&g, g.cursor.position, was + msg.String())
-// g.cursor.editIndex++
-
 func (c *Cursor) Entry(g *Grid, s string) {
 	if !c.editMode || c.editIndex == MaxEntryLength {
 		return
 	}
-	was := GetCellContent(g, c.position)
-	SetCellContent(g, c.position, was + s)
+	was := c.position.GetCellContent(g)
+	c.position.SetCellContent(g, was + s)
 	c.editIndex++
 }
 
 func (c *Cursor) Backspace(g *Grid) {
 	if !c.editMode || c.editIndex == 0 {
-		SetCellContent(g, c.position, "")
+		c.position.SetCellContent(g, "")
 	} else {
-		was := GetCellContent(g, c.position)
+		was := c.position.GetCellContent(g)
 		if len(was) > 0 {
-			SetCellContent(g, c.position, was[:len(was)-1])
+			c.position.SetCellContent(g, was[:len(was)-1])
 			c.editIndex--
 		}
 	}
