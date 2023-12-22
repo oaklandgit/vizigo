@@ -4,7 +4,7 @@ import "strconv"
 
 type Grid struct {
 	cells map[Position]Cell
-	cursor Position
+	cursor Cursor
 	selection []Position
 }
 

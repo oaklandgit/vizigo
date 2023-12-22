@@ -1,6 +1,22 @@
 package main
 
-import "unicode"
+import (
+	"fmt"
+	"unicode"
+)
+
+func UnderlineChar(s string, i int) string {
+
+	if len(s) == 0 {
+		return ""
+	}
+
+	start := s[:i]
+    underline := s[i : i+1]
+    end := s[i+1:]
+
+	return fmt.Sprintf("%s\033[4m%s\033[0m%s", start, underline, end)
+}
 
 func ColumnToLetters(n int) string {
 	var result string
@@ -21,7 +37,7 @@ func LettersToColumn(s string) int {
 	return result
 }
 
-func GetCellContent(g Grid, p Position) string {
+func GetCellContent(g *Grid, p Position) string {
 	return g.cells[p].content
 }
 

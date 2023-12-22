@@ -8,60 +8,29 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc":
-			editMode = false
+			g.cursor.editMode = false
+			g.cursor.editIndex = 0
 		case "enter":
-			if editMode {
-				editMode = false
-				if g.cursor.row < Rows - 1 {
-					g.cursor.row++
-				}
-			} else {
-				editMode = true
-			}
+			g.cursor.ToggleEditMode()
 		case "up":
-			editMode = false
-			if g.cursor.row > 1 {
-				g.cursor.row--
-			}
+			g.cursor.Up()
 		case "down":
-			editMode = false
-			if g.cursor.row < Rows - 1 {
-				g.cursor.row++
-			}
+			g.cursor.Down()
 		case "left":
-			if !editMode && g.cursor.col > 1 {
-				g.cursor.col--
-			}
+			g.cursor.Left()
 		case "right":
-			if !editMode && g.cursor.col < Cols - 1 {
-				g.cursor.col++
-			}
+			g.cursor.Right()
 		case "ctrl+c":
-			editMode = false
-			clipboard = GetCellContent(g, g.cursor)
-
+			g.cursor.Copy(&g)
 		case "ctrl+v":
-			editMode = false
-			SetCellContent(&g, g.cursor, clipboard)
+			g.cursor.Paste(&g)
 
 		case "backspace":
-			if !editMode {
-				SetCellContent(&g, g.cursor, "")
-			} else {
-				was := GetCellContent(g, g.cursor)
-				if len(was) > 0 {
-					SetCellContent(&g, g.cursor, was[:len(was)-1])
-				}
-			}
+			g.cursor.Backspace(&g)
 		case "ctrl+x":
 			return g, tea.Quit
 		default:
-			if !editMode {
-				return g, nil
-			}
-			was := GetCellContent(g, g.cursor)
-			SetCellContent(&g, g.cursor, was + msg.String())
-		
+			g.cursor.Entry(&g, msg.String())		
 		}
 		
 	}

@@ -7,7 +7,8 @@ const (
 	Cols      		= 6
 	HOffset			= 1
 	VOffset 		= 1
-	ColWidth 		= 12
+	ColWidth 		= 16
+	MaxEntryLength 	= ColWidth - 2
 	FirstColWidth 	= 3
 	Hilite 			= lipgloss.Color("72")
 	Gray 			= lipgloss.Color("243")

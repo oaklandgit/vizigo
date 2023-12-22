@@ -7,8 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-var clipboard string
-var editMode = false
+// var clipboard string
 
 func main() {
 	p := tea.NewProgram(initialGrid())
@@ -22,7 +21,7 @@ func initialGrid() Grid {
 
 	return Grid{
 		cells: map[Position]Cell{},
-		cursor: Position{row: 1, col: 1},
+		cursor: Cursor{ Position{row: 1, col: 1}, false, 0, "" },
 		selection: []Position{},
 	}
 }

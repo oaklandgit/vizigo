@@ -5,77 +5,78 @@ import (
 )
 
 func (g Grid) View() string {
-	s := ""
-	cellContent := ""
+
+	mStr := "" // mode string
+	rStr := "" // return string
+	cStr := "" // content string
+	p := Position{}
 
 	// status bar
-	mode := ""
-	if editMode {
-		mode = "EDIT "
+	if g.cursor.editMode {
+		mStr = "EDIT "
 	}
 
-	s += fmt.Sprintf("\n%s%s %s",
-		mode,
-		g.cursor.ToString(),
-		GetCellContent(g, g.cursor),
+	rStr += fmt.Sprintf("\n%s%s %s",
+		mStr,
+		g.cursor.position.ToString(),
+		GetCellContent(&g, g.cursor.position),
 	)
 
 	// header
-	s += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
+	rStr += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
 	for col := HOffset; col < Cols; col++ {
-		if col == g.cursor.col {
-			s += ThSelected.Render(ColumnToLetters(col))
+		if col == g.cursor.position.col {
+			rStr += ThSelected.Render(ColumnToLetters(col))
 		} else {
-			s += ThDeselected.Render(ColumnToLetters(col))
+			rStr += ThDeselected.Render(ColumnToLetters(col))
 		}
 	}
 
 	// rows start at 1
 	for row := VOffset; row < Rows; row++ {
 
-		s += "\n"
+		rStr += "\n"
 
-		if row == g.cursor.row {
-			s += TrSelected.Render(fmt.Sprintf("%d", row))
+		if row == g.cursor.position.row {
+			rStr += TrSelected.Render(fmt.Sprintf("%d", row))
 		} else {
-			s += TrDeselected.Render(fmt.Sprintf("%d", row))
+			rStr += TrDeselected.Render(fmt.Sprintf("%d", row))
 		}
 		
 
 		for col := HOffset; col < Cols; col++ {
 
-			cellContent = ""
+			cStr = ""
+			p.row = row
+			p.col = col
 
 			for pos, cell := range g.cells {
-				p := Position{row: row, col: col}
 				if pos == p {
 
 					raw := cell.content
 
-					if p == g.cursor && editMode {
-						cellContent = fmt.Sprintf("%-*s", 3, raw)
+					if p == g.cursor.position && g.cursor.editMode {
+						cStr = fmt.Sprintf("%-*s", ColWidth, raw)
 					} else {
-						cellContent = fmt.Sprintf("%-*s", 3, g.Compute(raw))
+						cStr = fmt.Sprintf("%-*s", ColWidth, g.Compute(raw))
 					}
 				}
 			}
 
-			p := Position{row: row, col: col}
-
-			if p == g.cursor && !editMode {
-				s += CursorSelected.Render(cellContent)
-			} else if p == g.cursor && editMode {
-				s += CursorEditMode.Render(cellContent)
+			if p == g.cursor.position && !g.cursor.editMode {
+				rStr += CursorSelected.Render(cStr)
+			} else if p == g.cursor.position && g.cursor.editMode {
+				rStr += CursorEditMode.Render(UnderlineChar(cStr, g.cursor.editIndex))
 			} else {
-				s += CursorDeselected.Render(cellContent)
+				rStr += CursorDeselected.Render(cStr)
 			}
 
-			cellContent = ""
+			cStr = ""
 		}
 	}
 
 	
-	s += "\n\n" + HelpText
+	rStr += "\n\n" + HelpText
 
-	return s
+	return rStr
 }
