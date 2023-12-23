@@ -24,7 +24,7 @@ func (c *Cell) Render(g Grid, p Position) string {
 
 		// edit mode
 		if g.cursor.editMode {
-			return CursorEditMode.Render(g.computed[p])
+			return CursorEditMode.Render(c.content)
 		} else {
 			return CursorSelected.Render(g.computed[p])
 		}

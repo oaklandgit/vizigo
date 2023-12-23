@@ -10,8 +10,7 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc":
-			g.cursor.editMode = false
-			g.cursor.editIndex = 0
+			g.cursor.Escape()
 		case "enter":
 			g.cursor.ToggleEditMode()
 		case "up":
@@ -36,7 +35,7 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	}
-	
+
 	g.Calculate()
 	return g, nil
 }

@@ -81,3 +81,8 @@ func (c *Cursor) Backspace(g *Grid) {
 		}
 	}
 }
+
+func (c *Cursor) Escape() {
+	c.editMode = false
+	c.editIndex = 0
+}
