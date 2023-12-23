@@ -18,8 +18,9 @@ func main() {
 func initialGrid() Grid {
 
 	return Grid{
-		cells: map[Position]Cell{},
-		cursor: Cursor{ Position{row: 1, col: 1}, false, 0, "" },
+		cells:     map[Position]Cell{},
+		computed:  map[Position]string{},
+		cursor:    Cursor{Position{row: 1, col: 1}, false, 0, ""},
 		selection: []Position{},
 	}
 }

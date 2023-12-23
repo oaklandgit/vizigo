@@ -1,11 +1,11 @@
 package main
 
 func Sum(operands []float64) float64 {
-    total := 0.0
-    for _, f := range operands {
-        total += f
-    }
-    return total
+	total := 0.0
+	for _, f := range operands {
+		total += f
+	}
+	return total
 }
 
 func Product(operands []float64) float64 {

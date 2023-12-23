@@ -1,9 +1,13 @@
 package main
 
-import tea "github.com/charmbracelet/bubbletea"
-
+import (
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+
+	g.Calculate()
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -30,9 +34,9 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+x":
 			return g, tea.Quit
 		default:
-			g.cursor.Entry(&g, msg.String())		
+			g.cursor.Entry(&g, msg.String())
 		}
-		
+
 	}
 
 	return g, nil
