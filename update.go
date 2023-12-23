@@ -6,8 +6,6 @@ import (
 
 func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
-	g.Calculate()
-
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -38,6 +36,7 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	}
-
+	
+	g.Calculate()
 	return g, nil
 }
