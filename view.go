@@ -55,6 +55,12 @@ func (g Grid) View() string {
 		}
 	}
 
+	if (g.saved) {
+		returnString += "\n\n" + g.filename + ".viz (saved)"
+	} else {
+		returnString += "\n\n" + g.filename + ".viz (unsaved)"
+	}
+	
 	returnString += "\n\n" + helpText
 	return returnString
 }

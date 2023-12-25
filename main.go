@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
-	"strconv"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -20,22 +20,17 @@ func main() {
 
 func initialGrid() Grid {
 
-	args := os.Args[1:]
-	cols := defaultCols
-	rows := defaultRows
+	cols := flag.Int("c", defaultCols, "The number of columns")
+	rows := flag.Int("r", defaultRows, "The number of rows")
+	filename := flag.String("f", "untitled", "The filename to open")
+    
 
-	if len(args) == 2 {
-		arg1, colErr := strconv.Atoi(args[0])
-		arg2, rowErr := strconv.Atoi(args[1])
-
-		if colErr == nil && rowErr == nil {
-			cols = arg1
-			rows = arg2
-		}
-	}
+	flag.Parse()
 
 	return Grid{
-		size:      Position{row: rows, col: cols},
+		filename:  *filename,
+		saved:     false,
+		size:      Position{row: *rows, col: *cols},
 		cells:     map[Position]Cell{},
 		computed:  map[Position]string{},
 		cursor:    Cursor{Position{row: 1, col: 1}, false, -1, ""},

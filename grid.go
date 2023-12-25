@@ -9,6 +9,8 @@ import (
 )
 
 type Grid struct {
+	filename 	string
+	saved 		bool
 	size	 	Position // probably should rename as Vector
 	cells     	map[Position]Cell
 	computed 	map[Position]string
@@ -45,9 +47,9 @@ func (g *Grid) Calculate() {
 
 }
 
-func (g *Grid) Save(f string) {
+func (g *Grid) Save() {
 
-	file, err := os.Create(f)
+	file, err := os.Create(g.filename)
     if err != nil {
         log.Fatal(err)
     }
@@ -60,6 +62,8 @@ func (g *Grid) Save(f string) {
             log.Fatal(err)
         }
     }
+
+	g.saved = true
 }
 
 func (g *Grid) Compute(s string) string {

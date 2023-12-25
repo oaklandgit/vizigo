@@ -16,4 +16,5 @@ func (p Position) GetCellContent(g *Grid) string {
 
 func (p Position) SetCellContent(g *Grid, content string) {
 	g.cells[p] = Cell{content: content}
+	g.saved = false
 }
