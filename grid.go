@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
 	"regexp"
 	"strconv"
 )
@@ -40,6 +43,26 @@ func (g *Grid) Calculate() {
 		g.computed[position] = g.Compute(cell.content)
 	}
 
+}
+
+func (g *Grid) Save(f string) {
+	// for position, cell := range g.cells {
+	// 	fmt.Printf("%s:%s\n", position.ToString(), cell.content)
+	// }
+
+	file, err := os.Create(f)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer file.Close()
+
+    for pos, cell := range g.cells {
+        line := fmt.Sprintf("%s%d:%s\n", ColumnToLetters(pos.col), pos.row, cell.content)
+        _, err := file.WriteString(line)
+        if err != nil {
+            log.Fatal(err)
+        }
+    }
 }
 
 func (g *Grid) Compute(s string) string {
