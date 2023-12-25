@@ -21,8 +21,8 @@ func main() {
 func initialGrid() Grid {
 
 	args := os.Args[1:]
-	cols := DefaultCols
-	rows := DefaultRows
+	cols := defaultCols
+	rows := defaultRows
 
 	if len(args) == 2 {
 		arg1, colErr := strconv.Atoi(args[0])

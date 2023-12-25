@@ -17,7 +17,7 @@ type Grid struct {
 }
 
 func (g *Grid) WidestCell(col int) int {
-	widest := MinColWidth
+	widest := minColWidth
 	for row := 1; row < g.size.row; row++ {
 		p := Position{row: row, col: col}
 		if len(g.computed[p]) > widest {

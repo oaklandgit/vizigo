@@ -3,17 +3,17 @@ package main
 import "github.com/charmbracelet/lipgloss"
 
 const (
-	DefaultCols		= 6
-	DefaultRows		= 12
-	HOffset        	= 1
-	VOffset        	= 1
-	MinColWidth    	= 8
-	MaxEntryLength 	= 22
-	FirstColWidth  	= 4
-	Hilite         	= lipgloss.Color("72")
-	Gray           	= lipgloss.Color("243")
-	Black          	= lipgloss.Color("0")
-	White          	= lipgloss.Color("15")
+	defaultCols		= 6
+	defaultRows		= 12
+	hOffset        	= 1
+	vOffset        	= 1
+	minColWidth    	= 8
+	maxEntryLength 	= 22
+	firstColWidth  	= 4
+	hilite         	= lipgloss.Color("72")
+	gray           	= lipgloss.Color("243")
+	black          	= lipgloss.Color("0")
+	white          	= lipgloss.Color("15")
 
-	HelpText = "move: [→ ← ↑ ↓], edit: [enter], copy: [⌃c], paste: [⌃v], save: [⌃s], quit: [⌃q]"
+	helpText = "move: [→ ← ↑ ↓], edit: [enter], copy: [⌃c], paste: [⌃v], save: [⌃s], quit: [⌃q]"
 )

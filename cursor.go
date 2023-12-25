@@ -62,7 +62,7 @@ func (c *Cursor) Right(g *Grid) {
 }
 
 func (c *Cursor) Entry(g *Grid, s string) {
-	if !c.editMode || c.editIndex == MaxEntryLength {
+	if !c.editMode || c.editIndex == maxEntryLength {
 		return
 	}
 
