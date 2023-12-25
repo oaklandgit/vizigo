@@ -15,5 +15,5 @@ const (
 	Black          	= lipgloss.Color("0")
 	White          	= lipgloss.Color("15")
 
-	HelpText = "move: [→ ← ↑ ↓], edit: [enter], copy: [⌃c], paste: [⌃v], save: [⌃s], exit: [⌃x]"
+	HelpText = "move: [→ ← ↑ ↓], edit: [enter], copy: [⌃c], paste: [⌃v], quit: [⌃q]"
 )
