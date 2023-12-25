@@ -13,11 +13,10 @@ func (g Grid) View() string {
 	if g.cursor.editMode {
 		modeString = "EDIT "
 	}
-	returnString += fmt.Sprintf("\n%s%s %s %d",
+	returnString += fmt.Sprintf("\n%s%s %s",
 		modeString,
 		g.cursor.position.ToString(),
 		g.cursor.position.GetCellContent(&g),
-		g.cursor.editIndex,
 	)
 
 	// Header ////
