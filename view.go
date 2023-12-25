@@ -22,7 +22,7 @@ func (g Grid) View() string {
 
 	// Header ////
 	returnString += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
-	for col := HOffset; col < g.size.col; col++ {
+	for col := HOffset; col < g.size.col + HOffset; col++ {
 
 		width := g.WidestCell(col)
 
@@ -34,7 +34,7 @@ func (g Grid) View() string {
 	}
 
 	// Rows ////
-	for row := VOffset; row < g.size.row; row++ {
+	for row := VOffset; row < g.size.row + VOffset; row++ {
 
 		returnString += "\n"
 
@@ -45,7 +45,7 @@ func (g Grid) View() string {
 		}
 
 		// Columns ////
-		for col := HOffset; col < g.size.col; col++ {
+		for col := HOffset; col < g.size.col + HOffset; col++ {
 
 			// Cell
 			p := Position{row: row, col: col}
