@@ -72,6 +72,13 @@ func splitAlphaNumeric(s string) (alphaPart string, numericPart string) {
 	return s, ""
 }
 
+func alphaNumericToPosition(s string) Position {
+	alphaPart, numericPart := splitAlphaNumeric(s)
+	col := lettersToColumn(alphaPart)
+	row, _ := strconv.Atoi(numericPart)
+	return Position{row: row, col: col}
+}
+
 func maxPrecision(operands []float64) int {
 	
 	max := 0

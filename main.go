@@ -23,11 +23,9 @@ func initialGrid() Grid {
 	cols := flag.Int("c", defaultCols, "The number of columns")
 	rows := flag.Int("r", defaultRows, "The number of rows")
 	filename := flag.String("f", "untitled", "The filename to open")
-    
-
 	flag.Parse()
 
-	return Grid{
+	g := Grid{
 		filename:  *filename,
 		saved:     false,
 		size:      Position{row: *rows, col: *cols},
@@ -36,4 +34,8 @@ func initialGrid() Grid {
 		cursor:    Cursor{Position{row: 1, col: 1}, false, -1, ""},
 		selection: []Position{},
 	}
+
+	g.Load()
+
+	return g
 }

@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Grid struct {
@@ -113,12 +115,36 @@ func (g *Grid) Save() {
     defer file.Close()
 
     for pos, cell := range g.cells {
-        line := fmt.Sprintf("%s%d:%s\n", columnToLetters(pos.col), pos.row, cell.content)
+        line := fmt.Sprintf("%s%d@%s\n", columnToLetters(pos.col), pos.row, cell.content)
         _, err := file.WriteString(line)
         if err != nil {
             log.Fatal(err)
         }
     }
 
+	g.saved = true
+}
+
+func (g *Grid) Load() {
+
+	file, err := os.OpenFile(g.filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	g.cells = map[Position]Cell{}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		parts := strings.Split(scanner.Text(), "@")
+		g.cells[alphaNumericToPosition(parts[0])] = Cell{content: parts[1]}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	g.Calculate()
 	g.saved = true
 }
