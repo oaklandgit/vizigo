@@ -3,6 +3,8 @@ package main
 import "github.com/charmbracelet/lipgloss"
 
 const (
+	defaultFilename 		= "untitled"
+	fileExtension	 		= ".viz"
 	defaultCols				= 6
 	defaultRows				= 12
 	hOffset        			= 1

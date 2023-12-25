@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -22,8 +23,16 @@ func initialGrid() Grid {
 
 	cols := flag.Int("c", defaultCols, "The number of columns")
 	rows := flag.Int("r", defaultRows, "The number of rows")
-	filename := flag.String("f", "untitled", "The filename to open")
+	filename := flag.String("f", defaultFilename + fileExtension, "The filename to open")
 	flag.Parse()
+
+	// Get the actual file extension
+	ext := filepath.Ext(*filename)
+
+	// Compare the expected and actual extensions
+	if ext == "" {
+		*filename = *filename + fileExtension
+	}
 
 	g := Grid{
 		filename:  *filename,
