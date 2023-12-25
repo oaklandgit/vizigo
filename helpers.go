@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -42,7 +43,7 @@ func columnToLetters(n int) string {
 	var result string
 	for n > 0 {
 		remainder := (n - 1) % 26
-		result = string('A'+remainder) + result
+		result = string(rune('A'+remainder)) + result
 		n = (n - 1) / 26
 	}
 	return result
@@ -69,4 +70,24 @@ func splitAlphaNumeric(s string) (alphaPart string, numericPart string) {
 		return s[:splitIndex], s[splitIndex:]
 	}
 	return s, ""
+}
+
+func maxPrecision(operands []float64) int {
+	
+	max := 0
+
+	for _, operand := range operands {
+		
+		str := strconv.FormatFloat(operand, 'f', -1, 64)
+		parts := strings.Split(str, ".")
+
+		if len(parts) == 2 {
+			decPlaces := len(parts[1])
+			if decPlaces > max {
+				max = decPlaces
+			}
+		}
+
+	}
+	return max
 }

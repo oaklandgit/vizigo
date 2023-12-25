@@ -29,7 +29,6 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			g.cursor.Backspace(&g)
 		case "ctrl+s":
 			g.Save()
-
 		case "ctrl+q":
 			return g, tea.Quit
 		default:

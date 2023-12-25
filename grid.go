@@ -47,25 +47,6 @@ func (g *Grid) Calculate() {
 
 }
 
-func (g *Grid) Save() {
-
-	file, err := os.Create(g.filename)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer file.Close()
-
-    for pos, cell := range g.cells {
-        line := fmt.Sprintf("%s%d:%s\n", columnToLetters(pos.col), pos.row, cell.content)
-        _, err := file.WriteString(line)
-        if err != nil {
-            log.Fatal(err)
-        }
-    }
-
-	g.saved = true
-}
-
 func (g *Grid) Compute(s string) string {
 
 	pattern := `=([A-Z]+)\(([A-Z]+)(\d+):([A-Z]+)(\d+)\)`
@@ -83,7 +64,7 @@ func (g *Grid) Compute(s string) string {
 
 	operands := collectOperands(g, startRow, startCol, endRow, endCol)
 
-	result := 0.0
+	result := 0.00
 
 	switch matches[1] {
 	case "SUM":
@@ -100,7 +81,9 @@ func (g *Grid) Compute(s string) string {
 		result = Count(operands)
 	}
 
-	return strconv.FormatFloat(result, 'f', -1, 64)
+	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
+
+	// return strconv.FormatFloat(result, 'f', -1, 64)
 
 }
 
@@ -119,4 +102,23 @@ func collectOperands(g *Grid, startRow, startCol, endRow, endCol int) []float64 
 	}
 
 	return operands
+}
+
+func (g *Grid) Save() {
+
+	file, err := os.Create(g.filename)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer file.Close()
+
+    for pos, cell := range g.cells {
+        line := fmt.Sprintf("%s%d:%s\n", columnToLetters(pos.col), pos.row, cell.content)
+        _, err := file.WriteString(line)
+        if err != nil {
+            log.Fatal(err)
+        }
+    }
+
+	g.saved = true
 }
