@@ -7,7 +7,7 @@ type Position struct {
 }
 
 func (p Position) ToString() string {
-	return ColumnToLetters(p.col) + strconv.Itoa(p.row)
+	return columnToLetters(p.col) + strconv.Itoa(p.row)
 }
 
 func (p Position) GetCellContent(g *Grid) string {

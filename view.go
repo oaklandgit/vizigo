@@ -27,9 +27,9 @@ func (g Grid) View() string {
 		width := g.WidestCell(col)
 
 		if col == g.cursor.position.col {
-			returnString += ThSelected.Render(PadStringToCenter(ColumnToLetters(col), width))
+			returnString += ThSelected.Render(padStringToCenter(columnToLetters(col), width))
 		} else {
-			returnString += ThDeselected.Render(PadStringToCenter(ColumnToLetters(col), width))
+			returnString += ThDeselected.Render(padStringToCenter(columnToLetters(col), width))
 		}
 	}
 

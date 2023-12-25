@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-func PadStringToCenter(s string, width int) string {
+func padStringToCenter(s string, width int) string {
 	if len(s) >= width {
 		return s
 	}
@@ -16,20 +16,20 @@ func PadStringToCenter(s string, width int) string {
 	return strings.Repeat(" ", leftPadding) + s + strings.Repeat(" ", rightPadding)
 }
 
-func SplitStringAt(s string, i int) (string, string, string, error) {
+func splitStringAt(s string, i int) (string, string, string, error) {
 	if i < 0 || i > len(s) {
 		return "", "", "", fmt.Errorf("can't split string at %d", i)
 	}
 	return s[:i], s[i : i+1], s[i+1:], nil
 }
 
-func UnderlineChar(s string, i int) string {
+func underlineChar(s string, i int) string {
 
 	if i < 0 {
 		return s
 	}
 
-	start, underline, end, error := SplitStringAt(s, i)
+	start, underline, end, error := splitStringAt(s, i)
 	if error != nil {
 		log.Fatal(error)
 	}
@@ -38,7 +38,7 @@ func UnderlineChar(s string, i int) string {
 	
 }
 
-func ColumnToLetters(n int) string {
+func columnToLetters(n int) string {
 	var result string
 	for n > 0 {
 		remainder := (n - 1) % 26
@@ -48,7 +48,7 @@ func ColumnToLetters(n int) string {
 	return result
 }
 
-func LettersToColumn(s string) int {
+func lettersToColumn(s string) int {
 	var result int
 	for _, c := range s {
 		result *= 26
@@ -57,7 +57,7 @@ func LettersToColumn(s string) int {
 	return result
 }
 
-func SplitAlphaNumeric(s string) (alphaPart string, numericPart string) {
+func splitAlphaNumeric(s string) (alphaPart string, numericPart string) {
 	splitIndex := -1
 	for i, char := range s {
 		if unicode.IsDigit(char) {

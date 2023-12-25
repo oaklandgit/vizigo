@@ -29,9 +29,9 @@ func (g *Grid) WidestCell(col int) int {
 
 func (g *Grid) CellFromString(s string) Cell {
 
-	alphaPart, numericPart := SplitAlphaNumeric(s)
+	alphaPart, numericPart := splitAlphaNumeric(s)
 
-	col := LettersToColumn(alphaPart)
+	col := lettersToColumn(alphaPart)
 	row, _ := strconv.Atoi(numericPart)
 
 	return g.cells[Position{row: row, col: col}]
@@ -46,9 +46,6 @@ func (g *Grid) Calculate() {
 }
 
 func (g *Grid) Save(f string) {
-	// for position, cell := range g.cells {
-	// 	fmt.Printf("%s:%s\n", position.ToString(), cell.content)
-	// }
 
 	file, err := os.Create(f)
     if err != nil {
@@ -57,7 +54,7 @@ func (g *Grid) Save(f string) {
     defer file.Close()
 
     for pos, cell := range g.cells {
-        line := fmt.Sprintf("%s%d:%s\n", ColumnToLetters(pos.col), pos.row, cell.content)
+        line := fmt.Sprintf("%s%d:%s\n", columnToLetters(pos.col), pos.row, cell.content)
         _, err := file.WriteString(line)
         if err != nil {
             log.Fatal(err)
@@ -76,9 +73,9 @@ func (g *Grid) Compute(s string) string {
 	}
 
 	startRow, _ := strconv.Atoi(matches[3]) // e.g. "5" -> 5
-	startCol := LettersToColumn(matches[2]) // e.g. "B" -> 2
+	startCol := lettersToColumn(matches[2]) // e.g. "B" -> 2
 	endRow, _ := strconv.Atoi(matches[5])
-	endCol := LettersToColumn(matches[4])
+	endCol := lettersToColumn(matches[4])
 
 	operands := collectOperands(g, startRow, startCol, endRow, endCol)
 

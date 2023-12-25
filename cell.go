@@ -21,23 +21,13 @@ func (c *Cell) Render(g *Grid, p *Position) string {
 
 	width := g.WidestCell(p.col)
 
-	// cursor at this cell
 	if g.cursor.position == *p {
 
-		
-
-		// edit mode
 		if g.cursor.editMode {
-			return CursorEditMode.Render(fmt.Sprintf(fmtStr, width, UnderlineChar(c.content, g.cursor.editIndex)))
-			// return CursorEditMode.Render(PadStringToCenter(UnderlineChar(c.content, g.cursor.editIndex), width))
+			return CursorEditMode.Render(fmt.Sprintf(fmtStr, width, underlineChar(c.content, g.cursor.editIndex)))
 		} else {
 			return CursorSelected.Render(fmt.Sprintf(fmtStr, width, g.computed[*p]))
-
-			// return CursorSelected.Render(PadStringToCenter(g.computed[*p], width))
 		}
 	}
-
-	// return PadStringToCenter(g.computed[*p], width)
 	return CursorDeselected.Render(fmt.Sprintf(fmtStr, width, g.computed[*p]))
-
 }
