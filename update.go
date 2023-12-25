@@ -12,11 +12,11 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			g.cursor.Escape()
 		case "enter":
-			g.cursor.ToggleEditMode()
+			g.cursor.ToggleEditMode(&g)
 		case "up":
 			g.cursor.Up()
 		case "down":
-			g.cursor.Down()
+			g.cursor.Down(&g)
 		case "left":
 			g.cursor.Left()
 		case "right":

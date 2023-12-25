@@ -6,6 +6,7 @@ import (
 )
 
 type Grid struct {
+	size	 	Position // probably should rename as Vector
 	cells     	map[Position]Cell
 	computed 	map[Position]string
 	cursor    	Cursor
@@ -14,7 +15,7 @@ type Grid struct {
 
 func (g *Grid) WidestCell(col int) int {
 	widest := MinColWidth
-	for row := 1; row < Rows; row++ {
+	for row := 1; row < g.size.row; row++ {
 		p := Position{row: row, col: col}
 		if len(g.computed[p]) > widest {
 			widest = len(g.computed[p])

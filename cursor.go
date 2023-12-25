@@ -17,11 +17,11 @@ func (c *Cursor) Paste(g *Grid) {
 	c.position.SetCellContent(g, c.clipboard)
 }
 
-func (c *Cursor) ToggleEditMode() {
+func (c *Cursor) ToggleEditMode(g *Grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
-		if c.position.row < Rows-1 {
+		if c.position.row < g.size.row-1 {
 			c.position.row++
 		}
 	} else {
@@ -37,10 +37,10 @@ func (c *Cursor) Up() {
 	}
 }
 
-func (c *Cursor) Down() {
+func (c *Cursor) Down(g *Grid) {
 	c.editMode = false
 	c.editIndex = -1
-	if c.position.row < Rows-1 {
+	if c.position.row < g.size.row-1 {
 		c.position.row++
 	}
 }
@@ -54,7 +54,7 @@ func (c *Cursor) Left() {
 }
 
 func (c *Cursor) Right(g *Grid) {
-	if !c.editMode && c.position.col < Cols-1 {
+	if !c.editMode && c.position.col < g.size.col-1 {
 		c.position.col++
 	} else if c.editMode && c.editIndex < len(c.position.GetCellContent(g)) -1 {
 		c.editIndex++
