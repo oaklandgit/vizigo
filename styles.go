@@ -5,44 +5,50 @@ import "github.com/charmbracelet/lipgloss"
 var ThDeselected = lipgloss.NewStyle().
 	Foreground(Black).
 	Background(Hilite).
-	Width(ColWidth).
-	Align(lipgloss.Center)
+	Align(lipgloss.Center).
+	PaddingLeft(1).
+	PaddingRight(1)
 
 var ThSelected = lipgloss.NewStyle().
 	Foreground(Hilite).
 	Background(Black).
-	Width(ColWidth).
-	Align(lipgloss.Center)
+	Align(lipgloss.Center).
+	PaddingLeft(1).
+	PaddingRight(1)
 
 var TrDeselected = lipgloss.NewStyle().
 	Foreground(Black).
 	Background(Hilite).
-	Width(FirstColWidth).
-	Align(lipgloss.Center)
+	Align(lipgloss.Center).
+	PaddingLeft(1).
+	PaddingRight(1).
+	Width(FirstColWidth)
 
 var TrSelected = lipgloss.NewStyle().
 	Foreground(Hilite).
 	Background(Black).
-	Width(FirstColWidth).
-	Align(lipgloss.Center)
+	Align(lipgloss.Center).
+	PaddingLeft(1).
+	PaddingRight(1).
+	Width(FirstColWidth)
 
 var CursorSelected = lipgloss.NewStyle().
 	Foreground(Black).
 	Background(Hilite).
-	Width(ColWidth).
-	PaddingLeft(1)
+	PaddingLeft(1).
+	PaddingRight(1)
 
 var CursorEditMode = lipgloss.NewStyle().
 	Foreground(Black).
 	Background(White).
-	Width(ColWidth).
-	PaddingLeft(1)
+	PaddingLeft(1).
+	PaddingRight(1)
 
 var CursorDeselected = lipgloss.NewStyle().
-	Width(ColWidth).
-	PaddingLeft(1)
+	PaddingLeft(1).
+	PaddingRight(1)
 
 var Selected = lipgloss.NewStyle().
 	Background(Black).
-	Width(ColWidth).
-	PaddingLeft(1)
+	PaddingLeft(1).
+	PaddingRight(1)

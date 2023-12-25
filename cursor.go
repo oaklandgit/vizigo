@@ -20,7 +20,7 @@ func (c *Cursor) Paste(g *Grid) {
 func (c *Cursor) ToggleEditMode() {
 	if c.editMode {
 		c.editMode = false
-		c.editIndex = 0
+		c.editIndex = -1
 		if c.position.row < Rows-1 {
 			c.position.row++
 		}
@@ -31,7 +31,7 @@ func (c *Cursor) ToggleEditMode() {
 
 func (c *Cursor) Up() {
 	c.editMode = false
-	c.editIndex = 0
+	c.editIndex = -1
 	if c.position.row > 1 {
 		c.position.row--
 	}
@@ -39,7 +39,7 @@ func (c *Cursor) Up() {
 
 func (c *Cursor) Down() {
 	c.editMode = false
-	c.editIndex = 0
+	c.editIndex = -1
 	if c.position.row < Rows-1 {
 		c.position.row++
 	}
@@ -48,15 +48,15 @@ func (c *Cursor) Down() {
 func (c *Cursor) Left() {
 	if !c.editMode && c.position.col > 1 {
 		c.position.col--
-	} else if c.editMode && c.editIndex > 0 {
-		c.editIndex--
+	} else if c.editMode && c.editIndex > -1 {
+			c.editIndex--
 	}
 }
 
-func (c *Cursor) Right() {
+func (c *Cursor) Right(g *Grid) {
 	if !c.editMode && c.position.col < Cols-1 {
 		c.position.col++
-	} else if c.editMode && c.editIndex < ColWidth-1 {
+	} else if c.editMode && c.editIndex < len(c.position.GetCellContent(g)) -1 {
 		c.editIndex++
 	}
 }
@@ -65,24 +65,37 @@ func (c *Cursor) Entry(g *Grid, s string) {
 	if !c.editMode || c.editIndex == MaxEntryLength {
 		return
 	}
-	was := c.position.GetCellContent(g)
-	c.position.SetCellContent(g, was+s)
+
 	c.editIndex++
+
+	before := c.position.GetCellContent(g)[:c.editIndex]
+	after := c.position.GetCellContent(g)[c.editIndex:]
+
+	c.position.SetCellContent(g, before + s + after)
+
+}
+
+func (c *Cursor) Clear(g *Grid) {
+	c.position.SetCellContent(g, "")
 }
 
 func (c *Cursor) Backspace(g *Grid) {
-	if !c.editMode || c.editIndex == 0 {
-		c.position.SetCellContent(g, "")
-	} else {
-		was := c.position.GetCellContent(g)
-		if len(was) > 0 {
-			c.position.SetCellContent(g, was[:len(was)-1])
-			c.editIndex--
-		}
+	if !c.editMode {
+		c.Clear(g)
+		return
+	}
+
+	if c.editIndex > -1 {
+
+		before := c.position.GetCellContent(g)[:c.editIndex + 1]
+		after := c.position.GetCellContent(g)[c.editIndex + 1:]
+		c.position.SetCellContent(g, before[:len(before) -1] + after)
+		c.editIndex--
+		
 	}
 }
 
 func (c *Cursor) Escape() {
 	c.editMode = false
-	c.editIndex = 0
+	c.editIndex = -1
 }

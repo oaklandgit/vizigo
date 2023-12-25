@@ -13,19 +13,23 @@ func (g Grid) View() string {
 	if g.cursor.editMode {
 		modeString = "EDIT "
 	}
-	returnString += fmt.Sprintf("\n%s%s %s",
+	returnString += fmt.Sprintf("\n%s%s %s %d",
 		modeString,
 		g.cursor.position.ToString(),
 		g.cursor.position.GetCellContent(&g),
+		g.cursor.editIndex,
 	)
 
 	// Header ////
 	returnString += "\n" + fmt.Sprintf("%-*s", FirstColWidth, " ")
 	for col := HOffset; col < Cols; col++ {
+
+		width := g.WidestCell(col)
+
 		if col == g.cursor.position.col {
-			returnString += ThSelected.Render(ColumnToLetters(col))
+			returnString += ThSelected.Render(PadStringToCenter(ColumnToLetters(col), width))
 		} else {
-			returnString += ThDeselected.Render(ColumnToLetters(col))
+			returnString += ThDeselected.Render(PadStringToCenter(ColumnToLetters(col), width))
 		}
 	}
 
@@ -46,7 +50,7 @@ func (g Grid) View() string {
 			// Cell
 			p := Position{row: row, col: col}
 			cell := g.cells[p]
-			returnString += cell.Render(g, p)
+			returnString += cell.Render(&g, &p)
 
 		}
 	}

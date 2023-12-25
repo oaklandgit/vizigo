@@ -12,6 +12,17 @@ type Grid struct {
 	selection 	[]Position
 }
 
+func (g *Grid) WidestCell(col int) int {
+	widest := MinColWidth
+	for row := 1; row < Rows; row++ {
+		p := Position{row: row, col: col}
+		if len(g.computed[p]) > widest {
+			widest = len(g.computed[p])
+		}
+	}
+	return widest
+}
+
 func (g *Grid) CellFromString(s string) Cell {
 
 	alphaPart, numericPart := SplitAlphaNumeric(s)

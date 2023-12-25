@@ -20,7 +20,7 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "left":
 			g.cursor.Left()
 		case "right":
-			g.cursor.Right()
+			g.cursor.Right(&g)
 		case "ctrl+c":
 			g.cursor.Copy(&g)
 		case "ctrl+v":

@@ -20,7 +20,7 @@ func initialGrid() Grid {
 	return Grid{
 		cells:     map[Position]Cell{},
 		computed:  map[Position]string{},
-		cursor:    Cursor{Position{row: 1, col: 1}, false, 0, ""},
+		cursor:    Cursor{Position{row: 1, col: 1}, false, -1, ""},
 		selection: []Position{},
 	}
 }
