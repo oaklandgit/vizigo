@@ -61,5 +61,10 @@ func (g Grid) View() string {
 	}
 	
 	returnString += "\n\n" + helpText
+
+	// if len(g.history) > 0 {
+	// 	returnString += "\n\n" + fmt.Sprintf("HISTORY: %v", g.history)
+	// }
+
 	return returnString
 }

@@ -42,6 +42,7 @@ func initialGrid() Grid {
 		computed:  map[Position]string{},
 		cursor:    Cursor{Position{row: 1, col: 1}, false, -1, ""},
 		selection: []Position{},
+		history:   []map[Position]Cell{},
 	}
 
 	g.Load()

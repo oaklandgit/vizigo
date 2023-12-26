@@ -27,6 +27,8 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			g.cursor.Paste(&g)
 		case "backspace":
 			g.cursor.Backspace(&g)
+		case "ctrl+z":
+			g.Undo()
 		case "ctrl+s":
 			g.Save()
 		case "ctrl+q":

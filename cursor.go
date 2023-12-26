@@ -15,6 +15,7 @@ func (c *Cursor) Copy(g *Grid) {
 func (c *Cursor) Paste(g *Grid) {
 	c.editMode = false
 	c.position.SetCellContent(g, c.clipboard)
+	g.SaveForUndo()
 }
 
 func (c *Cursor) ToggleEditMode(g *Grid) {
@@ -24,6 +25,7 @@ func (c *Cursor) ToggleEditMode(g *Grid) {
 		if c.position.row < g.size.row {
 			c.position.row++
 		}
+		g.SaveForUndo()
 	} else {
 		c.editMode = true
 	}
@@ -77,6 +79,7 @@ func (c *Cursor) Entry(g *Grid, s string) {
 
 func (c *Cursor) Clear(g *Grid) {
 	c.position.SetCellContent(g, "")
+	g.SaveForUndo()
 }
 
 func (c *Cursor) Backspace(g *Grid) {

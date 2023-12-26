@@ -18,6 +18,7 @@ type Grid struct {
 	computed 	map[Position]string
 	cursor    	Cursor
 	selection 	[]Position
+	history     []map[Position]Cell
 }
 
 func (g *Grid) WidestCell(col int) int {
@@ -84,9 +85,6 @@ func (g *Grid) Compute(s string) string {
 	}
 
 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
-
-	// return strconv.FormatFloat(result, 'f', -1, 64)
-
 }
 
 func collectOperands(g *Grid, startRow, startCol, endRow, endCol int) []float64 {
@@ -104,6 +102,42 @@ func collectOperands(g *Grid, startRow, startCol, endRow, endCol int) []float64 
 	}
 
 	return operands
+}
+
+func (g *Grid) ClearCells() {
+	g.cells = make(map[Position]Cell)
+	g.computed = make(map[Position]string)
+}
+
+func (g *Grid) ClearCellsAndHistory() {
+	g.cells = make(map[Position]Cell)
+	g.computed = make(map[Position]string)
+	g.history = []map[Position]Cell{}
+}
+
+func (g *Grid) SaveForUndo() {
+	cellsCopy := make(map[Position]Cell, len(g.cells))
+	for p, c := range g.cells {
+		cellsCopy[p] = c
+	}
+	g.history = append(g.history, cellsCopy)
+}
+
+func (g *Grid) Undo() {
+
+	if len(g.history) == 0 {
+		return
+	}
+
+	if len(g.history) == 1 {
+		g.ClearCellsAndHistory()
+		return
+	}
+
+	g.ClearCells()
+	g.history = g.history[:len(g.history)-1]
+	g.cells = g.history[len(g.history)-1]
+	g.Calculate()
 }
 
 func (g *Grid) Save() {
