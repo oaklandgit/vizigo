@@ -125,14 +125,16 @@ func (g *Grid) SaveForUndo() {
 
 func (g *Grid) Undo() {
 
-	if len(g.history) == 0 {
+	if len(g.history) == 1 {
 		return
 	}
 
-	if len(g.history) == 1 {
-		g.ClearCellsAndHistory()
-		return
-	}
+	g.saved = false
+
+	// if len(g.history) == 1 {
+	// 	g.ClearCellsAndHistory()
+	// 	return
+	// }
 
 	g.ClearCells()
 	g.history = g.history[:len(g.history)-1]
@@ -180,5 +182,6 @@ func (g *Grid) Load() {
 	}
 
 	g.Calculate()
+	g.SaveForUndo()
 	g.saved = true
 }

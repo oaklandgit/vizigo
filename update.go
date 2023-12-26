@@ -12,7 +12,7 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			g.cursor.Escape()
 		case "enter":
-			g.cursor.ToggleEditMode(&g)
+			g.cursor.Enter(&g)
 		case "up":
 			g.cursor.Up()
 		case "down":
@@ -21,6 +21,8 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			g.cursor.Left()
 		case "right":
 			g.cursor.Right(&g)
+		case "tab":
+			g.cursor.Tab(&g)
 		case "ctrl+c":
 			g.cursor.Copy(&g)
 		case "ctrl+v":
@@ -34,7 +36,7 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+q":
 			return g, tea.Quit
 		default:
-			g.cursor.Entry(&g, msg.String())
+			g.cursor.TextEntry(&g, msg.String())
 		}
 
 	}

@@ -18,12 +18,25 @@ func (c *Cursor) Paste(g *Grid) {
 	g.SaveForUndo()
 }
 
-func (c *Cursor) ToggleEditMode(g *Grid) {
+func (c *Cursor) Enter(g *Grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
 		if c.position.row < g.size.row {
 			c.position.row++
+		}
+		g.SaveForUndo()
+	} else {
+		c.editMode = true
+	}
+}
+
+func (c *Cursor) Tab(g *Grid) {
+	if c.editMode {
+		c.editMode = false
+		c.editIndex = -1
+		if c.position.col < g.size.col {
+			c.position.col++
 		}
 		g.SaveForUndo()
 	} else {
@@ -63,7 +76,9 @@ func (c *Cursor) Right(g *Grid) {
 	}
 }
 
-func (c *Cursor) Entry(g *Grid, s string) {
+
+
+func (c *Cursor) TextEntry(g *Grid, s string) {
 	if !c.editMode || c.editIndex == maxEntryLength {
 		return
 	}

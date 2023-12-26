@@ -17,6 +17,15 @@ const (
 	black          			= lipgloss.Color("0")
 	white          			= lipgloss.Color("15")
 	globalPrecisionLimit 	= 5 // (decimal places)
-
-	helpText = "move: [→ ← ↑ ↓], edit: [enter], copy: [⌃c], paste: [⌃v], save: [⌃s], quit: [⌃q]"
 )
+
+var helpText = map[string]string{
+	"move":  "→ ← ↑ ↓",
+	"edit":  "enter, tab",
+	"copy":  "ctrl-c",
+	"paste": "ctrl-v",
+	"save":  "ctrl-s",
+	"quit":  "ctrl-q",
+}
+
+var helpTextKeys = []string{"move", "edit", "copy", "paste", "save", "quit"}

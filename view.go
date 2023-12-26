@@ -59,12 +59,12 @@ func (g Grid) View() string {
 	} else {
 		returnString += "\n\n" + g.filename + " (unsaved)"
 	}
-	
-	returnString += "\n\n" + helpText
 
-	// if len(g.history) > 0 {
-	// 	returnString += "\n\n" + fmt.Sprintf("HISTORY: %v", g.history)
-	// }
+	returnString += "\n\n==== HELP ===="
+
+	for _, action := range helpTextKeys {
+		returnString += fmt.Sprintf("\n%-6s %-8s", action, helpText[action])
+	}
 
 	return returnString
 }
