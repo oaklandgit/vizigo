@@ -12,10 +12,9 @@ const (
 	minColWidth    			= 8
 	maxEntryLength 			= 22
 	firstColWidth  			= 4
-	hilite         			= lipgloss.Color("72")
-	// lightGrey           	= lipgloss.Color("243")
-	darkGrey          		= lipgloss.Color("0")
 	white          			= lipgloss.Color("15")
+	darkGrey          		= lipgloss.Color("0")
+	hilite         			= lipgloss.Color("72")
 	globalPrecisionLimit 	= 5 // (decimal places)
 )
 

@@ -91,17 +91,17 @@ func TestSplitAlphaNumeric(t *testing.T) {
     }
 }
 
-func TestAlphaNumericToPosition(t *testing.T) {
+func TestAlphaNumericToVectorColRow(t *testing.T) {
 
-    got := alphaNumericToPosition("A1")
-    want := Position{row: 1, col: 1}
+    got := alphaNumericToVectorColRow("A1")
+    want := VectorColRow{row: 1, col: 1}
 
     if got != want {
         t.Errorf("YourFunction(\"input\") = %v, want %v", got, want)
     }
 
-    got = alphaNumericToPosition("AA11")
-    want = Position{row: 11, col: 27}
+    got = alphaNumericToVectorColRow("AA11")
+    want = VectorColRow{row: 11, col: 27}
 
     if got != want {
         t.Errorf("YourFunction(\"input\") = %v, want %v", got, want)

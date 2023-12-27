@@ -1,7 +1,7 @@
 package main
 
 type Cursor struct {
-	position  Position
+	position  VectorColRow
 	editMode  bool
 	editIndex int
 	clipboard string

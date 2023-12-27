@@ -51,15 +51,15 @@ func (g Grid) View() string {
 
 			// Cell
 
-			p := Position{row: row, col: col}
-			cell := g.cells[p]
+			v := VectorColRow{col: col, row: row}
+			cell := g.cells[v]
 
-			_, isRef := referenced[p]
+			_, isRef := referenced[v]
 
 			if isRef {
-				returnString += cell.Render(&g, &p, true)
+				returnString += cell.Render(&g, &v, true)
 			} else {
-				returnString += cell.Render(&g, &p, false)
+				returnString += cell.Render(&g, &v, false)
 			}
 
 		}

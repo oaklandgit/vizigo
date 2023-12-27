@@ -12,8 +12,8 @@ import (
 func main() {
 
 
-	p := tea.NewProgram(initialGrid())
-	if _, err := p.Run(); err != nil {
+	app := tea.NewProgram(initialGrid())
+	if _, err := app.Run(); err != nil {
 		fmt.Printf("Error bro: %v", err)
 		os.Exit(1)
 	}
@@ -37,12 +37,12 @@ func initialGrid() Grid {
 	g := Grid{
 		filename:  *filename,
 		saved:     false,
-		size:      Position{row: *rows, col: *cols},
-		cells:     map[Position]Cell{},
-		computed:  map[Position]string{},
-		cursor:    Cursor{Position{row: 1, col: 1}, false, -1, ""},
-		selection: []Position{},
-		history:   []map[Position]Cell{},
+		size:      VectorColRow{col: *cols, row: *rows},
+		cells:     map[VectorColRow]Cell{},
+		computed:  map[VectorColRow]string{},
+		cursor:    Cursor{VectorColRow{col: 1, row: 1}, false, -1, ""},
+		selection: []VectorColRow{},
+		history:   []map[VectorColRow]Cell{},
 	}
 
 	g.Load()

@@ -13,20 +13,20 @@ import (
 type Grid struct {
 	filename 	string
 	saved 		bool
-	size	 	Position // probably should rename as Vector
-	cells     	map[Position]Cell
-	computed 	map[Position]string
+	size	 	VectorColRow // probably should rename as Vector
+	cells     	map[VectorColRow]Cell
+	computed 	map[VectorColRow]string
 	cursor    	Cursor
-	selection 	[]Position
-	history     []map[Position]Cell
+	selection 	[]VectorColRow
+	history     []map[VectorColRow]Cell
 }
 
 func (g *Grid) WidestCell(col int) int {
 	widest := minColWidth
 	for row := 1; row < g.size.row; row++ {
-		p := Position{row: row, col: col}
-		if len(g.computed[p]) > widest {
-			widest = len(g.computed[p])
+		v := VectorColRow{row: row, col: col}
+		if len(g.computed[v]) > widest {
+			widest = len(g.computed[v])
 		}
 	}
 	return widest
@@ -39,7 +39,7 @@ func (g *Grid) CellFromString(s string) Cell {
 	col := lettersToColumn(alphaPart)
 	row, _ := strconv.Atoi(numericPart)
 
-	return g.cells[Position{row: row, col: col}]
+	return g.cells[VectorColRow{row: row, col: col}]
 }
 
 func (g *Grid) Calculate() {
@@ -50,9 +50,9 @@ func (g *Grid) Calculate() {
 
 }
 
-func (g *Grid) FetchReferencedCells(s string) (map[Position]Cell) {
+func (g *Grid) FetchReferencedCells(s string) (map[VectorColRow]Cell) {
 	
-	refCells := make(map[Position]Cell)
+	refCells := make(map[VectorColRow]Cell)
 
 	pattern := `=([A-Z]+)\(([A-Z]+)(\d+):([A-Z]+)(\d+)\)`
 	re := regexp.MustCompile(pattern)
@@ -69,9 +69,9 @@ func (g *Grid) FetchReferencedCells(s string) (map[Position]Cell) {
 
 	for row := startRow; row <= endRow; row++ {
 		for col := startCol; col <= endCol; col++ {
-			p := Position{row: row, col: col}
-			c := g.cells[p]
-			refCells[p] = c
+			v := VectorColRow{row: row, col: col}
+			c := g.cells[v]
+			refCells[v] = c
 		}
 	}
 
@@ -109,7 +109,7 @@ func (g *Grid) Compute(s string) string {
 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
 }
 
-func (g *Grid) CollectOperands(cells map[Position]Cell) ([]float64) {
+func (g *Grid) CollectOperands(cells map[VectorColRow]Cell) ([]float64) {
 
 	operands := []float64{}
 
@@ -123,18 +123,18 @@ func (g *Grid) CollectOperands(cells map[Position]Cell) ([]float64) {
 }
 
 func (g *Grid) ClearCells() {
-	g.cells = make(map[Position]Cell)
-	g.computed = make(map[Position]string)
+	g.cells = make(map[VectorColRow]Cell)
+	g.computed = make(map[VectorColRow]string)
 }
 
 func (g *Grid) ClearCellsAndHistory() {
-	g.cells = make(map[Position]Cell)
-	g.computed = make(map[Position]string)
-	g.history = []map[Position]Cell{}
+	g.cells = make(map[VectorColRow]Cell)
+	g.computed = make(map[VectorColRow]string)
+	g.history = []map[VectorColRow]Cell{}
 }
 
 func (g *Grid) SaveForUndo() {
-	cellsCopy := make(map[Position]Cell, len(g.cells))
+	cellsCopy := make(map[VectorColRow]Cell, len(g.cells))
 	for p, c := range g.cells {
 		cellsCopy[p] = c
 	}
@@ -182,12 +182,12 @@ func (g *Grid) Load() {
 	}
 	defer file.Close()
 
-	g.cells = map[Position]Cell{}
+	g.cells = map[VectorColRow]Cell{}
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		parts := strings.Split(scanner.Text(), "@")
-		g.cells[alphaNumericToPosition(parts[0])] = Cell{content: parts[1]}
+		g.cells[alphaNumericToVectorColRow(parts[0])] = Cell{content: parts[1]}
 	}
 
 	if err := scanner.Err(); err != nil {
