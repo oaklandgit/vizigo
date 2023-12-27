@@ -50,14 +50,16 @@ func (g *Grid) Calculate() {
 
 }
 
-func (g *Grid) Compute(s string) string {
+func (g *Grid) FetchReferencedCells(s string) (map[Position]Cell) {
+	
+	refCells := make(map[Position]Cell)
 
 	pattern := `=([A-Z]+)\(([A-Z]+)(\d+):([A-Z]+)(\d+)\)`
 	re := regexp.MustCompile(pattern)
 	matches := re.FindStringSubmatch(s)
 
 	if matches == nil {
-		return s
+		return refCells // empty
 	}
 
 	startRow, _ := strconv.Atoi(matches[3]) // e.g. "5" -> 5
@@ -65,40 +67,56 @@ func (g *Grid) Compute(s string) string {
 	endRow, _ := strconv.Atoi(matches[5])
 	endCol := lettersToColumn(matches[4])
 
-	operands := collectOperands(g, startRow, startCol, endRow, endCol)
+	for row := startRow; row <= endRow; row++ {
+		for col := startCol; col <= endCol; col++ {
+			p := Position{row: row, col: col}
+			c := g.cells[p]
+			refCells[p] = c
+		}
+	}
+
+	return refCells
+}
+
+func (g *Grid) Compute(s string) string {
+
+	operands := g.CollectOperands(g.FetchReferencedCells(s))
+
+	if len(operands) == 0 {
+		return s
+	}
 
 	result := 0.00
 
-	switch matches[1] {
-	case "SUM":
-		result = Sum(operands)
-	case "PROD":
-		result = Product(operands)
-	case "MAX":
-		result = Max(operands)
-	case "MIN":
-		result = Min(operands)
-	case "AVG":
-		result = Average(operands)
-	case "COUNT":
-		result = Count(operands)
-	}
+	// temporarily only sum
+	result = Sum(operands)
+
+	// switch matches[1] {
+	// case "SUM":
+	// 	result = Sum(operands)
+	// case "PROD":
+	// 	result = Product(operands)
+	// case "MAX":
+	// 	result = Max(operands)
+	// case "MIN":
+	// 	result = Min(operands)
+	// case "AVG":
+	// 	result = Average(operands)
+	// case "COUNT":
+	// 	result = Count(operands)
+	// }
 
 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
 }
 
-func collectOperands(g *Grid, startRow, startCol, endRow, endCol int) []float64 {
-	// generate a list of values between startCell and endCell
+func (g *Grid) CollectOperands(cells map[Position]Cell) ([]float64) {
+
 	operands := []float64{}
 
-	for row := startRow; row <= endRow; row++ {
-		for col := startCol; col <= endCol; col++ {
-			p := Position{row: row, col: col}
-			content := g.Compute(p.GetCellContent(g))
-
-			value, _ := strconv.ParseFloat(content, 64)
-			operands = append(operands, value)
-		}
+	for _, c := range cells {
+		content := g.Compute(c.content)
+		value, _ := strconv.ParseFloat(content, 64)
+		operands = append(operands, value)
 	}
 
 	return operands
@@ -130,11 +148,6 @@ func (g *Grid) Undo() {
 	}
 
 	g.saved = false
-
-	// if len(g.history) == 1 {
-	// 	g.ClearCellsAndHistory()
-	// 	return
-	// }
 
 	g.ClearCells()
 	g.history = g.history[:len(g.history)-1]
