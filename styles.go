@@ -3,7 +3,7 @@ package main
 import "github.com/charmbracelet/lipgloss"
 
 var ThDeselected = lipgloss.NewStyle().
-	Foreground(black).
+	Foreground(darkGrey).
 	Background(hilite).
 	Align(lipgloss.Center).
 	PaddingLeft(1).
@@ -11,13 +11,13 @@ var ThDeselected = lipgloss.NewStyle().
 
 var ThSelected = lipgloss.NewStyle().
 	Foreground(hilite).
-	Background(black).
+	Background(darkGrey).
 	Align(lipgloss.Center).
 	PaddingLeft(1).
 	PaddingRight(1)
 
 var TrDeselected = lipgloss.NewStyle().
-	Foreground(black).
+	Foreground(darkGrey).
 	Background(hilite).
 	Align(lipgloss.Center).
 	PaddingLeft(1).
@@ -26,20 +26,20 @@ var TrDeselected = lipgloss.NewStyle().
 
 var TrSelected = lipgloss.NewStyle().
 	Foreground(hilite).
-	Background(black).
+	Background(darkGrey).
 	Align(lipgloss.Center).
 	PaddingLeft(1).
 	PaddingRight(1).
 	Width(firstColWidth)
 
 var CursorSelected = lipgloss.NewStyle().
-	Foreground(black).
+	Foreground(darkGrey).
 	Background(hilite).
 	PaddingLeft(1).
 	PaddingRight(1)
 
 var CursorEditMode = lipgloss.NewStyle().
-	Foreground(black).
+	Foreground(darkGrey).
 	Background(white).
 	PaddingLeft(1).
 	PaddingRight(1)
@@ -48,7 +48,13 @@ var CursorDeselected = lipgloss.NewStyle().
 	PaddingLeft(1).
 	PaddingRight(1)
 
-var Selected = lipgloss.NewStyle().
-	Background(black).
+var CellReferenced = lipgloss.NewStyle().
+	Foreground(white).
+	Background(darkGrey).
 	PaddingLeft(1).
 	PaddingRight(1)
+
+// var Selected = lipgloss.NewStyle().
+// 	Background(black).
+// 	PaddingLeft(1).
+// 	PaddingRight(1)

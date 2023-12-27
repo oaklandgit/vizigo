@@ -8,6 +8,9 @@ func (g Grid) View() string {
 
 	modeString := ""
 	returnString := ""
+	referenced := g.FetchReferencedCells(g.cursor.position.GetCellContent(&g))
+
+
 
 	// Status Bar ////
 	if g.cursor.editMode {
@@ -47,9 +50,17 @@ func (g Grid) View() string {
 		for col := hOffset; col < g.size.col + hOffset; col++ {
 
 			// Cell
+
 			p := Position{row: row, col: col}
 			cell := g.cells[p]
-			returnString += cell.Render(&g, &p)
+
+			_, isRef := referenced[p]
+
+			if isRef {
+				returnString += cell.Render(&g, &p, true)
+			} else {
+				returnString += cell.Render(&g, &p, false)
+			}
 
 		}
 	}
@@ -60,7 +71,7 @@ func (g Grid) View() string {
 		returnString += "\n\n" + g.filename + " (unsaved)"
 	}
 
-	returnString += "\n\n==== HELP ===="
+	returnString += "\n\n==== HELP ====\n"
 
 	for _, action := range helpTextKeys {
 		returnString += fmt.Sprintf("\n%-6s %-8s", action, helpText[action])

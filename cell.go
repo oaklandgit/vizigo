@@ -9,7 +9,7 @@ type Cell struct {
 	content string
 }
 
-func (c *Cell) Render(g *Grid, p *Position) string {
+func (c *Cell) Render(g *Grid, p *Position, referenced bool) string {
 
 	fmtStr := ""
 
@@ -25,9 +25,14 @@ func (c *Cell) Render(g *Grid, p *Position) string {
 
 		if g.cursor.editMode {
 			return CursorEditMode.Render(fmt.Sprintf(fmtStr, width, underlineChar(c.content, g.cursor.editIndex)))
-		} else {
-			return CursorSelected.Render(fmt.Sprintf(fmtStr, width, g.computed[*p]))
 		}
+		return CursorSelected.Render(fmt.Sprintf(fmtStr, width, g.computed[*p]))
 	}
+	
+	if referenced {
+		return CellReferenced.Render(fmt.Sprintf(fmtStr, width, g.computed[*p]))
+	}
+	
 	return CursorDeselected.Render(fmt.Sprintf(fmtStr, width, g.computed[*p]))
+	
 }
