@@ -93,7 +93,9 @@ func (c *Cursor) TextEntry(g *Grid, s string) {
 }
 
 func (c *Cursor) Clear(g *Grid) {
-	c.position.SetCellContent(g, "")
+	// c.position.SetCellContent(g, "")
+	delete(g.cells, c.position)
+	delete(g.computed, c.position)
 	g.SaveForUndo()
 }
 
