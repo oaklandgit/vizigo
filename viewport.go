@@ -1,6 +1,6 @@
 package main
 
-type Viewport struct {
-	size Vector
-	offset Vector
+type viewport struct {
+	size vector
+	offset vector
 }

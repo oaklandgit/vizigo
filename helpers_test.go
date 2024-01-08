@@ -97,14 +97,14 @@ func TestSplitAlphaNumeric(t *testing.T) {
 func TestAlphaNumericToPosition(t *testing.T) {
 
     got := alphaNumericToPosition("A1")
-    want := Vector{row: 1, col: 1}
+    want := vector{row: 1, col: 1}
 
     if got != want {
         t.Errorf("YourFunction(\"input\") = %v, want %v", got, want)
     }
 
     got = alphaNumericToPosition("AA11")
-    want = Vector{row: 11, col: 27}
+    want = vector{row: 11, col: 27}
 
     if got != want {
         t.Errorf("YourFunction(\"input\") = %v, want %v", got, want)
@@ -134,7 +134,7 @@ func TestExtractReferences(t *testing.T) {
 func TestPositionsFromReferences(t *testing.T) {
     input := []string{"A1:B2", "B3"}
     got := positionsFromReferences(input)
-    want := []Vector{
+    want := []vector{
         {col: 1, row: 1}, // A1
         {col: 2, row: 1}, // B1
         {col: 1, row: 2}, // A2

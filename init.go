@@ -2,6 +2,6 @@ package main
 
 import tea "github.com/charmbracelet/bubbletea"
 
-func (g Grid) Init() tea.Cmd {
+func (g grid) Init() tea.Cmd {
 	return nil
 }

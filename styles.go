@@ -32,23 +32,23 @@ var TrSelected = lipgloss.NewStyle().
 	PaddingRight(1).
 	Width(firstColWidth)
 
-var CursorSelected = lipgloss.NewStyle().
+var cursorSelected = lipgloss.NewStyle().
 	Foreground(darkGrey).
 	Background(hilite).
 	PaddingLeft(1).
 	PaddingRight(1)
 
-var CursorEditMode = lipgloss.NewStyle().
+var cursorEditMode = lipgloss.NewStyle().
 	Foreground(darkGrey).
 	Background(white).
 	PaddingLeft(1).
 	PaddingRight(1)
 
-var CursorDeselected = lipgloss.NewStyle().
+var cursorDeselected = lipgloss.NewStyle().
 	PaddingLeft(1).
 	PaddingRight(1)
 
-var CellReferenced = lipgloss.NewStyle().
+var cellReferenced = lipgloss.NewStyle().
 	Foreground(white).
 	Background(darkGrey).
 	PaddingLeft(1).

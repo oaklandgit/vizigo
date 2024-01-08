@@ -1,75 +1,75 @@
 package main
 
-type Cursor struct {
-	Vector
+type cursor struct {
+	vector
 	editMode  bool
 	editIndex int
 	clipboard string
 }
 
-func (c *Cursor) Copy(g *Grid) {
+func (c *cursor) Copy(g *grid) {
 	c.editMode = false
-	c.clipboard = c.Vector.GetCellContent(g, false)
+	c.clipboard = c.vector.GetcellContent(g, false)
 }
 
-func (c *Cursor) CopyValue(g *Grid) {
+func (c *cursor) CopyValue(g *grid) {
 	c.editMode = false
-	c.clipboard = c.Vector.GetCellContent(g, true)
+	c.clipboard = c.vector.GetcellContent(g, true)
 }
 
-func (c *Cursor) Paste(g *Grid) {
+func (c *cursor) Paste(g *grid) {
 	c.editMode = false
-	c.Vector.SetCellContent(g, c.clipboard)
-	g.SaveForUndo()
+	c.vector.SetcellContent(g, c.clipboard)
+	g.saveForUndo()
 }
 
-func (c *Cursor) Enter(g *Grid) {
+func (c *cursor) Enter(g *grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
-		if c.Vector.row < g.size.row {
-			c.Vector.row++
+		if c.vector.row < g.size.row {
+			c.vector.row++
 		}
-		g.SaveForUndo()
+		g.saveForUndo()
 	} else {
 		c.editMode = true
 	}
 }
 
-func (c *Cursor) Tab(g *Grid) {
+func (c *cursor) Tab(g *grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
-		if c.Vector.col < g.size.col {
-			c.Vector.col++
+		if c.vector.col < g.size.col {
+			c.vector.col++
 		}
-		g.SaveForUndo()
+		g.saveForUndo()
 	} else {
 		c.editMode = true
 	}
 }
 
-func (c *Cursor) Up() {
+func (c *cursor) Up() {
 	c.editMode = false
 	c.editIndex = -1
-	if c.Vector.row > 1 {
-		c.Vector.row--
+	if c.vector.row > 1 {
+		c.vector.row--
 	}
 }
 
-func (c *Cursor) Down(g *Grid) {
+func (c *cursor) Down(g *grid) {
 	c.editMode = false
 	c.editIndex = -1
-	if c.Vector.row < g.size.row {
-		c.Vector.row++
+	if c.vector.row < g.size.row {
+		c.vector.row++
 	}
 }
 
-func (c *Cursor) Left(g *Grid) {
-	if !c.editMode && c.Vector.col > 1 {
-		c.Vector.col--
+func (c *cursor) Left(g *grid) {
+	if !c.editMode && c.vector.col > 1 {
+		c.vector.col--
 
-		if c.Vector.col < g.viewport.offset.col {
+		if c.vector.col < g.viewport.offset.col {
 			g.viewport.offset.col--
 		}
 	} else if c.editMode && c.editIndex > -1 {
@@ -77,43 +77,42 @@ func (c *Cursor) Left(g *Grid) {
 	}
 }
 
-func (c *Cursor) Right(g *Grid) {
-	if !c.editMode && c.Vector.col < g.viewport.size.col {
+func (c *cursor) Right(g *grid) {
+	if !c.editMode && c.vector.col < g.viewport.size.col {
 		
-		c.Vector.col++
+		c.vector.col++
 
-		if c.Vector.col >= g.viewport.size.col  {
+		if c.vector.col >= g.viewport.size.col  {
 			g.viewport.offset.col++
 		}
-	} else if c.editMode && c.editIndex < len(c.Vector.GetCellContent(g, false)) -1 {
+	} else if c.editMode && c.editIndex < len(c.vector.GetcellContent(g, false)) -1 {
 		c.editIndex++
 	}
 }
 
 
 
-func (c *Cursor) TextEntry(g *Grid, s string) {
+func (c *cursor) TextEntry(g *grid, s string) {
 	if !c.editMode || c.editIndex == maxEntryLength {
 		return
 	}
 
 	c.editIndex++
 
-	before := c.Vector.GetCellContent(g, false)[:c.editIndex]
-	after := c.Vector.GetCellContent(g, false)[c.editIndex:]
+	before := c.vector.GetcellContent(g, false)[:c.editIndex]
+	after := c.vector.GetcellContent(g, false)[c.editIndex:]
 
-	c.Vector.SetCellContent(g, before + s + after)
+	c.vector.SetcellContent(g, before + s + after)
 
 }
 
-func (c *Cursor) Clear(g *Grid) {
-	// c.Vector.SetCellContent(g, "")
-	delete(g.cells, c.Vector)
-	delete(g.computed, c.Vector)
-	g.SaveForUndo()
+func (c *cursor) Clear(g *grid) {
+	delete(g.cells, c.vector)
+	delete(g.computed, c.vector)
+	g.saveForUndo()
 }
 
-func (c *Cursor) Backspace(g *Grid) {
+func (c *cursor) Backspace(g *grid) {
 	if !c.editMode {
 		c.Clear(g)
 		return
@@ -121,15 +120,15 @@ func (c *Cursor) Backspace(g *Grid) {
 
 	if c.editIndex > -1 {
 
-		before := c.Vector.GetCellContent(g, false)[:c.editIndex + 1]
-		after := c.Vector.GetCellContent(g, false)[c.editIndex + 1:]
-		c.Vector.SetCellContent(g, before[:len(before) -1] + after)
+		before := c.vector.GetcellContent(g, false)[:c.editIndex + 1]
+		after := c.vector.GetcellContent(g, false)[c.editIndex + 1:]
+		c.vector.SetcellContent(g, before[:len(before) -1] + after)
 		c.editIndex--
 		
 	}
 }
 
-func (c *Cursor) Escape() {
+func (c *cursor) Escape() {
 	c.editMode = false
 	c.editIndex = -1
 }

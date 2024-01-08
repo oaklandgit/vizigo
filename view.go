@@ -4,11 +4,11 @@ import (
 	"fmt"
 )
 
-func (g Grid) View() string {
+func (g grid) View() string {
 
 	modeString := ""
 	returnString := ""
-	referenced := g.fetchReferencedCells(g.cursor.Vector.GetCellContent(&g, false))
+	referenced := g.fetchReferencedcells(g.cursor.vector.GetcellContent(&g, false))
 
 	// Status Bar ////
 	if g.cursor.editMode {
@@ -16,8 +16,8 @@ func (g Grid) View() string {
 	}
 	returnString += fmt.Sprintf("\n%s%s %s",
 		modeString,
-		g.cursor.Vector.ToString(),
-		g.cursor.Vector.GetCellContent(&g, false),
+		g.cursor.vector.ToString(),
+		g.cursor.vector.GetcellContent(&g, false),
 	)
 
 	// find the min of the viewport size and the grid size
@@ -29,9 +29,9 @@ func (g Grid) View() string {
 	returnString += "\n" + fmt.Sprintf("%-*s", firstColWidth, " ")
 	for col := g.viewport.offset.col; col < colsToRender; col++ {
 
-		width := g.WidestCell(col)
+		width := g.widestCell(col)
 
-		if col == g.cursor.Vector.col {
+		if col == g.cursor.vector.col {
 			returnString += ThSelected.Render(padStringToCenter(columnToLetters(col), width))
 		} else {
 			returnString += ThDeselected.Render(padStringToCenter(columnToLetters(col), width))
@@ -46,7 +46,7 @@ func (g Grid) View() string {
 
 		returnString += "\n"
 
-		if row == g.cursor.Vector.row {
+		if row == g.cursor.vector.row {
 			returnString += TrSelected.Render(fmt.Sprintf("%d", row))
 		} else {
 			returnString += TrDeselected.Render(fmt.Sprintf("%d", row))
@@ -55,9 +55,9 @@ func (g Grid) View() string {
 		// Columns ////
 		for col := g.viewport.offset.col; col < colsToRender; col++ {
 
-			// Cell
+			// cell
 
-			v := Vector{col: col, row: row}
+			v := vector{col: col, row: row}
 			cell := g.cells[v]
 
 			_, isRef := referenced[v]

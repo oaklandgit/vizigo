@@ -73,11 +73,11 @@ func splitAlphaNumeric(s string) (alphaPart string, numericPart string) {
 	return s, ""
 }
 
-func alphaNumericToPosition(s string) Vector {
+func alphaNumericToPosition(s string) vector {
 	alphaPart, numericPart := splitAlphaNumeric(s)
 	col := lettersToColumn(alphaPart)
 	row, _ := strconv.Atoi(numericPart)
-	return Vector{col: col, row: row}
+	return vector{col: col, row: row}
 }
 
 func maxPrecision(operands []float64) int {
@@ -117,9 +117,9 @@ func extractReferences(s string) []string {
 	return groups
 }
 
-func positionsFromReferences(refs []string) []Vector {
+func positionsFromReferences(refs []string) []vector {
 	
-	positions := []Vector{}
+	positions := []vector{}
 
 	for _, ref := range refs {
 
@@ -130,7 +130,7 @@ func positionsFromReferences(refs []string) []Vector {
 
 			for row := start.row; row <= end.row; row++ {
 				for col := start.col; col <= end.col; col++ {
-					positions = append(positions, Vector{row: row, col: col})
+					positions = append(positions, vector{row: row, col: col})
 				}
 			}
 			

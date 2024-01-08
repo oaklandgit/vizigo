@@ -2,15 +2,15 @@ package main
 
 import "strconv"
 
-type Vector struct {
+type vector struct {
 	col, row int
 }
 
-func (v Vector) ToString() string {
+func (v vector) ToString() string {
 	return columnToLetters(v.col) + strconv.Itoa(v.row)
 }
 
-func (v Vector) GetCellContent(g *Grid, value bool) string {
+func (v vector) GetcellContent(g *grid, value bool) string {
 		if value {
 		return g.computed[v]
 	} else {
@@ -18,7 +18,7 @@ func (v Vector) GetCellContent(g *Grid, value bool) string {
 	}
 }
 
-func (v Vector) SetCellContent(g *Grid, content string) {
-	g.cells[v] = Cell{content: content}
+func (v vector) SetcellContent(g *grid, content string) {
+	g.cells[v] = cell{content: content}
 	g.saved = false
 }

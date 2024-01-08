@@ -9,22 +9,22 @@ import (
 	"strings"
 )
 
-type Grid struct {
+type grid struct {
 	filename 	string
 	saved 		bool
-	size	 	Vector
-	cells     	map[Vector]Cell
-	computed 	map[Vector]string
-	cursor    	Cursor
-	selection 	[]Vector
-	history     []map[Vector]Cell
-	viewport 	Viewport
+	size	 	vector
+	cells     	map[vector]cell
+	computed 	map[vector]string
+	cursor    	cursor
+	selection 	[]vector
+	history     []map[vector]cell
+	viewport 	viewport
 }
 
-func (g *Grid) WidestCell(col int) int {
+func (g *grid) widestCell(col int) int {
 	widest := minColWidth
 	for row := 1; row < g.size.row; row++ {
-		v := Vector{row: row, col: col}
+		v := vector{row: row, col: col}
 		if len(g.computed[v]) > widest {
 			widest = len(g.computed[v])
 		}
@@ -32,42 +32,42 @@ func (g *Grid) WidestCell(col int) int {
 	return widest
 }
 
-func (g *Grid) cellFromString(s string) Cell {
+func (g *grid) cellFromString(s string) cell {
 
 	alphaPart, numericPart := splitAlphaNumeric(s)
 
 	col := lettersToColumn(alphaPart)
 	row, _ := strconv.Atoi(numericPart)
 
-	return g.cells[Vector{row: row, col: col}]
+	return g.cells[vector{row: row, col: col}]
 }
 
 
-func (g *Grid) Calculate() {
+func (g *grid) calculate() {
 
 	for position, cell := range g.cells {
-		g.computed[position] = g.Compute(cell.content)
+		g.computed[position] = g.compute(cell.content)
 	}
 
 }
 
-func (g *Grid) fetchReferencedCells(s string) (map[Vector]Cell) {
+func (g *grid) fetchReferencedcells(s string) (map[vector]cell) {
 	
-	refCells := make(map[Vector]Cell)
+	refcells := make(map[vector]cell)
 
 	refs := extractReferences(s)
 	positions := positionsFromReferences(refs)
 
 	for _, position := range positions {
-		refCells[position] = g.cells[position]
+		refcells[position] = g.cells[position]
 	}
 
-	return refCells
+	return refcells
 }
 
-func (g *Grid) Compute(s string) string {
+func (g *grid) compute(s string) string {
 
-	operands := g.CollectOperands(g.fetchReferencedCells(s))
+	operands := g.CollectOperands(g.fetchReferencedcells(s))
 	formula := strings.ToUpper(strings.Split(s, "(")[0])
 
 	if len(operands) == 0 {
@@ -78,28 +78,28 @@ func (g *Grid) Compute(s string) string {
 
 	switch formula {
 	case "=SUM":
-		result = Sum(operands)
+		result = sum(operands)
 	case "=PROD":
-		result = Product(operands)
+		result = product(operands)
 	case "=MAX":
-		result = Max(operands)
+		result = max(operands)
 	case "=MIN":
-		result = Min(operands)
+		result = min(operands)
 	case "=AVG":
-		result = Average(operands)
+		result = average(operands)
 	case "=COUNT":
-		result = Count(operands)
+		result = count(operands)
 	}
 
 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
 }
 
-func (g *Grid) CollectOperands(cells map[Vector]Cell) ([]float64) {
+func (g *grid) CollectOperands(cells map[vector]cell) ([]float64) {
 
 	operands := []float64{}
 
 	for _, c := range cells {
-		content := g.Compute(c.content)
+		content := g.compute(c.content)
 		value, _ := strconv.ParseFloat(content, 64)
 		operands = append(operands, value)
 	}
@@ -107,26 +107,26 @@ func (g *Grid) CollectOperands(cells map[Vector]Cell) ([]float64) {
 	return operands
 }
 
-func (g *Grid) ClearCells() {
-	g.cells = make(map[Vector]Cell)
-	g.computed = make(map[Vector]string)
+func (g *grid) clearCells() {
+	g.cells = make(map[vector]cell)
+	g.computed = make(map[vector]string)
 }
 
-func (g *Grid) ClearCellsAndHistory() {
-	g.cells = make(map[Vector]Cell)
-	g.computed = make(map[Vector]string)
-	g.history = []map[Vector]Cell{}
+func (g *grid) clearCellsAndHistory() {
+	g.cells = make(map[vector]cell)
+	g.computed = make(map[vector]string)
+	g.history = []map[vector]cell{}
 }
 
-func (g *Grid) SaveForUndo() {
-	cellsCopy := make(map[Vector]Cell, len(g.cells))
+func (g *grid) saveForUndo() {
+	cellsCopy := make(map[vector]cell, len(g.cells))
 	for p, c := range g.cells {
 		cellsCopy[p] = c
 	}
 	g.history = append(g.history, cellsCopy)
 }
 
-func (g *Grid) Undo() {
+func (g *grid) Undo() {
 
 	if len(g.history) == 1 {
 		return
@@ -134,13 +134,13 @@ func (g *Grid) Undo() {
 
 	g.saved = false
 
-	g.ClearCells()
+	g.clearCells()
 	g.history = g.history[:len(g.history)-1]
 	g.cells = g.history[len(g.history)-1]
-	g.Calculate()
+	g.calculate()
 }
 
-func (g *Grid) Save() {
+func (g *grid) Save() {
 
 	file, err := os.Create(g.filename)
     if err != nil {
@@ -159,7 +159,7 @@ func (g *Grid) Save() {
 	g.saved = true
 }
 
-func (g *Grid) Load() {
+func (g *grid) Load() {
 
 	file, err := os.OpenFile(g.filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
@@ -167,19 +167,19 @@ func (g *Grid) Load() {
 	}
 	defer file.Close()
 
-	g.cells = map[Vector]Cell{}
+	g.cells = map[vector]cell{}
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		parts := strings.Split(scanner.Text(), "@")
-		g.cells[alphaNumericToPosition(parts[0])] = Cell{content: parts[1]}
+		g.cells[alphaNumericToPosition(parts[0])] = cell{content: parts[1]}
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	g.Calculate()
-	g.SaveForUndo()
+	g.calculate()
+	g.saveForUndo()
 	g.saved = true
 }

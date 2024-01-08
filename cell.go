@@ -5,11 +5,11 @@ import (
 	"strconv"
 )
 
-type Cell struct {
+type cell struct {
 	content string
 }
 
-func (c *Cell) Render(g *Grid, v Vector, referenced bool) string {
+func (c *cell) Render(g *grid, v vector, referenced bool) string {
 
 	fmtStr := ""
 
@@ -19,20 +19,20 @@ func (c *Cell) Render(g *Grid, v Vector, referenced bool) string {
 		fmtStr = "%-*s" // not numeric, so left align
 	}
 
-	width := g.WidestCell(v.col)
+	width := g.widestCell(v.col)
 
-	if g.cursor.Vector == v {
+	if g.cursor.vector == v {
 
 		if g.cursor.editMode {
-			return CursorEditMode.Render(fmt.Sprintf(fmtStr, width, underlineChar(c.content, g.cursor.editIndex)))
+			return cursorEditMode.Render(fmt.Sprintf(fmtStr, width, underlineChar(c.content, g.cursor.editIndex)))
 		}
-		return CursorSelected.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
+		return cursorSelected.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
 	}
 	
 	if referenced {
-		return CellReferenced.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
+		return cellReferenced.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
 	}
 	
-	return CursorDeselected.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
+	return cursorDeselected.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
 	
 }

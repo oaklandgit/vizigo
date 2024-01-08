@@ -4,7 +4,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -43,6 +43,6 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	}
 
-	g.Calculate()
+	g.calculate()
 	return g, nil
 }

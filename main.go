@@ -12,14 +12,14 @@ import (
 func main() {
 
 
-	app := tea.NewProgram(initialGrid())
+	app := tea.NewProgram(initialgrid())
 	if _, err := app.Run(); err != nil {
 		fmt.Printf("Error bro: %v", err)
 		os.Exit(1)
 	}
 }
 
-func initialGrid() Grid {
+func initialgrid() grid {
 
 	cols := flag.Int("c", defaultCols, "The number of columns")
 	rows := flag.Int("r", defaultRows, "The number of rows")
@@ -34,16 +34,16 @@ func initialGrid() Grid {
 		*filename = *filename + fileExtension
 	}
 
-	g := Grid{
+	g := grid{
 		filename:  *filename,
 		saved:     false,
-		size:      Vector{col: *cols, row: *rows},
-		cells:     map[Vector]Cell{},
-		computed:  map[Vector]string{},
-		cursor:    Cursor{Vector{col: 1, row: 1}, false, -1, ""},
-		selection: []Vector{},
-		history:   []map[Vector]Cell{},
-		viewport:  Viewport{Vector{col: viewportCols, row: viewportRows}, Vector{col: 1, row: 1}},
+		size:      vector{col: *cols, row: *rows},
+		cells:     map[vector]cell{},
+		computed:  map[vector]string{},
+		cursor:    cursor{vector{col: 1, row: 1}, false, -1, ""},
+		selection: []vector{},
+		history:   []map[vector]cell{},
+		viewport:  viewport{vector{col: viewportCols, row: viewportRows}, vector{col: 1, row: 1}},
 	}
 
 	g.Load()
