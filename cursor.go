@@ -9,7 +9,12 @@ type Cursor struct {
 
 func (c *Cursor) Copy(g *Grid) {
 	c.editMode = false
-	c.clipboard = c.Vector.GetCellContent(g)
+	c.clipboard = c.Vector.GetCellContent(g, false)
+}
+
+func (c *Cursor) CopyValue(g *Grid) {
+	c.editMode = false
+	c.clipboard = c.Vector.GetCellContent(g, true)
 }
 
 func (c *Cursor) Paste(g *Grid) {
@@ -80,7 +85,7 @@ func (c *Cursor) Right(g *Grid) {
 		if c.Vector.col >= g.viewport.size.col  {
 			g.viewport.offset.col++
 		}
-	} else if c.editMode && c.editIndex < len(c.Vector.GetCellContent(g)) -1 {
+	} else if c.editMode && c.editIndex < len(c.Vector.GetCellContent(g, false)) -1 {
 		c.editIndex++
 	}
 }
@@ -94,8 +99,8 @@ func (c *Cursor) TextEntry(g *Grid, s string) {
 
 	c.editIndex++
 
-	before := c.Vector.GetCellContent(g)[:c.editIndex]
-	after := c.Vector.GetCellContent(g)[c.editIndex:]
+	before := c.Vector.GetCellContent(g, false)[:c.editIndex]
+	after := c.Vector.GetCellContent(g, false)[c.editIndex:]
 
 	c.Vector.SetCellContent(g, before + s + after)
 
@@ -116,8 +121,8 @@ func (c *Cursor) Backspace(g *Grid) {
 
 	if c.editIndex > -1 {
 
-		before := c.Vector.GetCellContent(g)[:c.editIndex + 1]
-		after := c.Vector.GetCellContent(g)[c.editIndex + 1:]
+		before := c.Vector.GetCellContent(g, false)[:c.editIndex + 1]
+		after := c.Vector.GetCellContent(g, false)[c.editIndex + 1:]
 		c.Vector.SetCellContent(g, before[:len(before) -1] + after)
 		c.editIndex--
 		

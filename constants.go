@@ -20,13 +20,20 @@ const (
 	globalPrecisionLimit 	= 5 // (decimal places)
 )
 
-var helpText = map[string]string{
-	"move":  "→ ← ↑ ↓",
-	"edit":  "enter, tab",
-	"copy":  "ctrl-c",
-	"paste": "ctrl-v",
-	"save":  "ctrl-s",
-	"quit":  "ctrl-q",
-}
+var helpText = `
 
-var helpTextKeys = []string{"move", "edit", "copy", "paste", "save", "quit"}
+==== HELP ====
+
+values              : enter, then type a value
+labels              : enter, then type a label
+formulae            : e.g. =SUM(A1:B2, B3, C5)
+
+move                : → ← ↑ ↓
+edit                : enter, tab
+copy                : ctrl-c
+copy (value only)   : ctrl-n
+paste               : ctrl-v
+save                : ctrl-s
+quit                : ctrl-q
+
+`

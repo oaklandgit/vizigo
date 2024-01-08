@@ -8,7 +8,7 @@ func (g Grid) View() string {
 
 	modeString := ""
 	returnString := ""
-	referenced := g.fetchReferencedCells(g.cursor.Vector.GetCellContent(&g))
+	referenced := g.fetchReferencedCells(g.cursor.Vector.GetCellContent(&g, false))
 
 	// Status Bar ////
 	if g.cursor.editMode {
@@ -17,7 +17,7 @@ func (g Grid) View() string {
 	returnString += fmt.Sprintf("\n%s%s %s",
 		modeString,
 		g.cursor.Vector.ToString(),
-		g.cursor.Vector.GetCellContent(&g),
+		g.cursor.Vector.GetCellContent(&g, false),
 	)
 
 	// find the min of the viewport size and the grid size
@@ -77,11 +77,7 @@ func (g Grid) View() string {
 		returnString += "\n\n" + g.filename + " (unsaved)"
 	}
 
-	returnString += "\n\n==== HELP ====\n"
-
-	for _, action := range helpTextKeys {
-		returnString += fmt.Sprintf("\n%-6s %-8s", action, helpText[action])
-	}
+	returnString += helpText
 
 	return returnString
 }

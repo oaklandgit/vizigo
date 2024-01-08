@@ -10,8 +10,12 @@ func (v Vector) ToString() string {
 	return columnToLetters(v.col) + strconv.Itoa(v.row)
 }
 
-func (v Vector) GetCellContent(g *Grid) string {
-	return g.cells[v].content
+func (v Vector) GetCellContent(g *Grid, value bool) string {
+		if value {
+		return g.computed[v]
+	} else {
+		return g.cells[v].content
+	}
 }
 
 func (v Vector) SetCellContent(g *Grid, content string) {

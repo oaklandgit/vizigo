@@ -8,16 +8,17 @@ A command-line spreadsheet written in Go and [BubbleTea](https://github.com/char
 
 ### TO DO
 
-- comma-separated ranges
-- viewport and scrolling
 - select ranges visually
-- implement full suite of formulae
+- implement simple arithmetic (not just functions)
+- viewport and scrolling
 - autosuggest formulae
 - export as csv
 - complete unit tests
 
 ### DONE
 
+- implement SUM, PRODUCT, AVERAGE, MIN, MAX, COUNT
+- comma-separated ranges
 - hilite references to selected cell
 - undo / redo
 - load file
