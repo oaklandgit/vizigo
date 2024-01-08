@@ -51,7 +51,7 @@ func (g *grid) calculate() {
 
 }
 
-func (g *grid) fetchReferencedcells(s string) (map[vector]cell) {
+func (g *grid) fetchReferencedCells(s string) (map[vector]cell) {
 	
 	refcells := make(map[vector]cell)
 
@@ -67,7 +67,7 @@ func (g *grid) fetchReferencedcells(s string) (map[vector]cell) {
 
 func (g *grid) compute(s string) string {
 
-	operands := g.CollectOperands(g.fetchReferencedcells(s))
+	operands := g.collectOperands(g.fetchReferencedCells(s))
 	formula := strings.ToUpper(strings.Split(s, "(")[0])
 
 	if len(operands) == 0 {
@@ -94,7 +94,7 @@ func (g *grid) compute(s string) string {
 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
 }
 
-func (g *grid) CollectOperands(cells map[vector]cell) ([]float64) {
+func (g *grid) collectOperands(cells map[vector]cell) ([]float64) {
 
 	operands := []float64{}
 

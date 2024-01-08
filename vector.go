@@ -6,11 +6,11 @@ type vector struct {
 	col, row int
 }
 
-func (v vector) ToString() string {
+func (v vector) toString() string {
 	return columnToLetters(v.col) + strconv.Itoa(v.row)
 }
 
-func (v vector) GetcellContent(g *grid, value bool) string {
+func (v vector) getCellContent(g *grid, value bool) string {
 		if value {
 		return g.computed[v]
 	} else {
@@ -18,7 +18,7 @@ func (v vector) GetcellContent(g *grid, value bool) string {
 	}
 }
 
-func (v vector) SetcellContent(g *grid, content string) {
+func (v vector) setCellContent(g *grid, content string) {
 	g.cells[v] = cell{content: content}
 	g.saved = false
 }

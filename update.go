@@ -10,27 +10,27 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc":
-			g.cursor.Escape()
+			g.cursor.escape()
 		case "enter":
-			g.cursor.Enter(&g)
+			g.cursor.enter(&g)
 		case "up":
-			g.cursor.Up()
+			g.cursor.up()
 		case "down":
-			g.cursor.Down(&g)
+			g.cursor.down(&g)
 		case "left":
-			g.cursor.Left(&g)
+			g.cursor.left(&g)
 		case "right":
-			g.cursor.Right(&g)
+			g.cursor.right(&g)
 		case "tab":
-			g.cursor.Tab(&g)
+			g.cursor.tab(&g)
 		case "ctrl+c":
-			g.cursor.Copy(&g)
+			g.cursor.copy(&g)
 		case "ctrl+n":
-			g.cursor.CopyValue(&g)
+			g.cursor.copyValue(&g)
 		case "ctrl+v":
-			g.cursor.Paste(&g)
+			g.cursor.paste(&g)
 		case "backspace":
-			g.cursor.Backspace(&g)
+			g.cursor.backspace(&g)
 		case "ctrl+z":
 			g.Undo()
 		case "ctrl+s":
@@ -38,7 +38,7 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+q":
 			return g, tea.Quit
 		default:
-			g.cursor.TextEntry(&g, msg.String())
+			g.cursor.textEntry(&g, msg.String())
 		}
 
 	}

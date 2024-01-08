@@ -9,7 +9,7 @@ type cell struct {
 	content string
 }
 
-func (c *cell) Render(g *grid, v vector, referenced bool) string {
+func (c *cell) render(g *grid, v vector, referenced bool) string {
 
 	fmtStr := ""
 

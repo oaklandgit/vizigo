@@ -8,7 +8,7 @@ func (g grid) View() string {
 
 	modeString := ""
 	returnString := ""
-	referenced := g.fetchReferencedcells(g.cursor.vector.GetcellContent(&g, false))
+	referenced := g.fetchReferencedCells(g.cursor.vector.getCellContent(&g, false))
 
 	// Status Bar ////
 	if g.cursor.editMode {
@@ -16,8 +16,8 @@ func (g grid) View() string {
 	}
 	returnString += fmt.Sprintf("\n%s%s %s",
 		modeString,
-		g.cursor.vector.ToString(),
-		g.cursor.vector.GetcellContent(&g, false),
+		g.cursor.vector.toString(),
+		g.cursor.vector.getCellContent(&g, false),
 	)
 
 	// find the min of the viewport size and the grid size
@@ -39,9 +39,6 @@ func (g grid) View() string {
 	}
 
 	// Rows ////
-
-
-
 	for row := g.viewport.offset.row; row < rowsToRender; row++ {
 
 		returnString += "\n"
@@ -63,9 +60,9 @@ func (g grid) View() string {
 			_, isRef := referenced[v]
 
 			if isRef {
-				returnString += cell.Render(&g, v, true)
+				returnString += cell.render(&g, v, true)
 			} else {
-				returnString += cell.Render(&g, v, false)
+				returnString += cell.render(&g, v, false)
 			}
 
 		}

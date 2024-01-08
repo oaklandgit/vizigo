@@ -7,23 +7,23 @@ type cursor struct {
 	clipboard string
 }
 
-func (c *cursor) Copy(g *grid) {
+func (c *cursor) copy(g *grid) {
 	c.editMode = false
-	c.clipboard = c.vector.GetcellContent(g, false)
+	c.clipboard = c.vector.getCellContent(g, false)
 }
 
-func (c *cursor) CopyValue(g *grid) {
+func (c *cursor) copyValue(g *grid) {
 	c.editMode = false
-	c.clipboard = c.vector.GetcellContent(g, true)
+	c.clipboard = c.vector.getCellContent(g, true)
 }
 
-func (c *cursor) Paste(g *grid) {
+func (c *cursor) paste(g *grid) {
 	c.editMode = false
-	c.vector.SetcellContent(g, c.clipboard)
+	c.vector.setCellContent(g, c.clipboard)
 	g.saveForUndo()
 }
 
-func (c *cursor) Enter(g *grid) {
+func (c *cursor) enter(g *grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
@@ -36,7 +36,7 @@ func (c *cursor) Enter(g *grid) {
 	}
 }
 
-func (c *cursor) Tab(g *grid) {
+func (c *cursor) tab(g *grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
@@ -49,7 +49,7 @@ func (c *cursor) Tab(g *grid) {
 	}
 }
 
-func (c *cursor) Up() {
+func (c *cursor) up() {
 	c.editMode = false
 	c.editIndex = -1
 	if c.vector.row > 1 {
@@ -57,7 +57,7 @@ func (c *cursor) Up() {
 	}
 }
 
-func (c *cursor) Down(g *grid) {
+func (c *cursor) down(g *grid) {
 	c.editMode = false
 	c.editIndex = -1
 	if c.vector.row < g.size.row {
@@ -65,7 +65,7 @@ func (c *cursor) Down(g *grid) {
 	}
 }
 
-func (c *cursor) Left(g *grid) {
+func (c *cursor) left(g *grid) {
 	if !c.editMode && c.vector.col > 1 {
 		c.vector.col--
 
@@ -77,7 +77,7 @@ func (c *cursor) Left(g *grid) {
 	}
 }
 
-func (c *cursor) Right(g *grid) {
+func (c *cursor) right(g *grid) {
 	if !c.editMode && c.vector.col < g.viewport.size.col {
 		
 		c.vector.col++
@@ -85,50 +85,50 @@ func (c *cursor) Right(g *grid) {
 		if c.vector.col >= g.viewport.size.col  {
 			g.viewport.offset.col++
 		}
-	} else if c.editMode && c.editIndex < len(c.vector.GetcellContent(g, false)) -1 {
+	} else if c.editMode && c.editIndex < len(c.vector.getCellContent(g, false)) -1 {
 		c.editIndex++
 	}
 }
 
 
 
-func (c *cursor) TextEntry(g *grid, s string) {
+func (c *cursor) textEntry(g *grid, s string) {
 	if !c.editMode || c.editIndex == maxEntryLength {
 		return
 	}
 
 	c.editIndex++
 
-	before := c.vector.GetcellContent(g, false)[:c.editIndex]
-	after := c.vector.GetcellContent(g, false)[c.editIndex:]
+	before := c.vector.getCellContent(g, false)[:c.editIndex]
+	after := c.vector.getCellContent(g, false)[c.editIndex:]
 
-	c.vector.SetcellContent(g, before + s + after)
+	c.vector.setCellContent(g, before + s + after)
 
 }
 
-func (c *cursor) Clear(g *grid) {
+func (c *cursor) clear(g *grid) {
 	delete(g.cells, c.vector)
 	delete(g.computed, c.vector)
 	g.saveForUndo()
 }
 
-func (c *cursor) Backspace(g *grid) {
+func (c *cursor) backspace(g *grid) {
 	if !c.editMode {
-		c.Clear(g)
+		c.clear(g)
 		return
 	}
 
 	if c.editIndex > -1 {
 
-		before := c.vector.GetcellContent(g, false)[:c.editIndex + 1]
-		after := c.vector.GetcellContent(g, false)[c.editIndex + 1:]
-		c.vector.SetcellContent(g, before[:len(before) -1] + after)
+		before := c.vector.getCellContent(g, false)[:c.editIndex + 1]
+		after := c.vector.getCellContent(g, false)[c.editIndex + 1:]
+		c.vector.setCellContent(g, before[:len(before) -1] + after)
 		c.editIndex--
 		
 	}
 }
 
-func (c *cursor) Escape() {
+func (c *cursor) escape() {
 	c.editMode = false
 	c.editIndex = -1
 }
