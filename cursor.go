@@ -9,17 +9,17 @@ type cursor struct {
 
 func (c *cursor) copy(g *grid) {
 	c.editMode = false
-	c.clipboard = c.vector.getCellContent(g, false)
+	c.clipboard = c.getCellContent(g, false)
 }
 
 func (c *cursor) copyValue(g *grid) {
 	c.editMode = false
-	c.clipboard = c.vector.getCellContent(g, true)
+	c.clipboard = c.getCellContent(g, true)
 }
 
 func (c *cursor) paste(g *grid) {
 	c.editMode = false
-	c.vector.setCellContent(g, c.clipboard)
+	c.setCellContent(g, c.clipboard)
 	g.saveForUndo()
 }
 
@@ -27,8 +27,8 @@ func (c *cursor) enter(g *grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
-		if c.vector.row < g.size.row {
-			c.vector.row++
+		if c.row < g.size.row {
+			c.row++
 		}
 		g.saveForUndo()
 	} else {
@@ -40,8 +40,8 @@ func (c *cursor) tab(g *grid) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
-		if c.vector.col < g.size.col {
-			c.vector.col++
+		if c.col < g.size.col {
+			c.col++
 		}
 		g.saveForUndo()
 	} else {
@@ -49,27 +49,35 @@ func (c *cursor) tab(g *grid) {
 	}
 }
 
-func (c *cursor) up() {
+func (c *cursor) up(g *grid) {
 	c.editMode = false
 	c.editIndex = -1
-	if c.vector.row > 1 {
-		c.vector.row--
+	if c.row > 1 {
+		c.row--
+		if c.row < g.viewport.offset.row  {
+			g.viewport.offset.row--
+		}
 	}
 }
 
 func (c *cursor) down(g *grid) {
 	c.editMode = false
 	c.editIndex = -1
-	if c.vector.row < g.size.row {
-		c.vector.row++
+	if c.row < g.size.row {
+		c.row++
+		if c.row == g.viewport.size.row + g.viewport.offset.row  {
+			g.viewport.offset.row++
+		}
 	}
+
+
 }
 
 func (c *cursor) left(g *grid) {
-	if !c.editMode && c.vector.col > 1 {
-		c.vector.col--
+	if !c.editMode && c.col > 1 {
+		c.col--
 
-		if c.vector.col < g.viewport.offset.col {
+		if c.col < g.viewport.offset.col {
 			g.viewport.offset.col--
 		}
 	} else if c.editMode && c.editIndex > -1 {
@@ -78,14 +86,14 @@ func (c *cursor) left(g *grid) {
 }
 
 func (c *cursor) right(g *grid) {
-	if !c.editMode && c.vector.col < g.viewport.size.col {
+	if !c.editMode && c.col < g.size.col {
 		
-		c.vector.col++
+		c.col++
 
-		if c.vector.col >= g.viewport.size.col  {
+		if c.col == g.viewport.size.col + g.viewport.offset.col  {
 			g.viewport.offset.col++
 		}
-	} else if c.editMode && c.editIndex < len(c.vector.getCellContent(g, false)) -1 {
+	} else if c.editMode && c.editIndex < len(c.getCellContent(g, false)) -1 {
 		c.editIndex++
 	}
 }
@@ -99,10 +107,10 @@ func (c *cursor) textEntry(g *grid, s string) {
 
 	c.editIndex++
 
-	before := c.vector.getCellContent(g, false)[:c.editIndex]
-	after := c.vector.getCellContent(g, false)[c.editIndex:]
+	before := c.getCellContent(g, false)[:c.editIndex]
+	after := c.getCellContent(g, false)[c.editIndex:]
 
-	c.vector.setCellContent(g, before + s + after)
+	c.setCellContent(g, before + s + after)
 
 }
 
@@ -120,9 +128,9 @@ func (c *cursor) backspace(g *grid) {
 
 	if c.editIndex > -1 {
 
-		before := c.vector.getCellContent(g, false)[:c.editIndex + 1]
-		after := c.vector.getCellContent(g, false)[c.editIndex + 1:]
-		c.vector.setCellContent(g, before[:len(before) -1] + after)
+		before := c.getCellContent(g, false)[:c.editIndex + 1]
+		after := c.getCellContent(g, false)[c.editIndex + 1:]
+		c.setCellContent(g, before[:len(before) -1] + after)
 		c.editIndex--
 		
 	}

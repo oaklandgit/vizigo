@@ -9,8 +9,6 @@ const (
 	defaultRows				= 20
 	viewportCols			= 8
 	viewportRows			= 12
-	hOffset        			= 1
-	vOffset        			= 1
 	minColWidth    			= 8
 	maxEntryLength 			= 22
 	firstColWidth  			= 4

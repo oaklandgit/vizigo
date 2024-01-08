@@ -21,7 +21,7 @@ type grid struct {
 	viewport 	viewport
 }
 
-func (g *grid) widestCell(col int) int {
+func (g *grid) widestCellInCol(col int) int {
 	widest := minColWidth
 	for row := 1; row < g.size.row; row++ {
 		v := vector{row: row, col: col}

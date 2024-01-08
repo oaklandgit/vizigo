@@ -19,7 +19,7 @@ func (c *cell) render(g *grid, v vector, referenced bool) string {
 		fmtStr = "%-*s" // not numeric, so left align
 	}
 
-	width := g.widestCell(v.col)
+	width := g.widestCellInCol(v.col)
 
 	if g.cursor.vector == v {
 

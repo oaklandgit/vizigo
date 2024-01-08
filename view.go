@@ -29,7 +29,7 @@ func (g grid) View() string {
 	returnString += "\n" + fmt.Sprintf("%-*s", firstColWidth, " ")
 	for col := g.viewport.offset.col; col < colsToRender; col++ {
 
-		width := g.widestCell(col)
+		width := g.widestCellInCol(col)
 
 		if col == g.cursor.vector.col {
 			returnString += ThSelected.Render(padStringToCenter(columnToLetters(col), width))

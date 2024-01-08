@@ -14,7 +14,7 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			g.cursor.enter(&g)
 		case "up":
-			g.cursor.up()
+			g.cursor.up(&g)
 		case "down":
 			g.cursor.down(&g)
 		case "left":
