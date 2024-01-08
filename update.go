@@ -18,7 +18,7 @@ func (g Grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "down":
 			g.cursor.Down(&g)
 		case "left":
-			g.cursor.Left()
+			g.cursor.Left(&g)
 		case "right":
 			g.cursor.Right(&g)
 		case "tab":

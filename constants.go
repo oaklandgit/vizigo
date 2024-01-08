@@ -5,8 +5,10 @@ import "github.com/charmbracelet/lipgloss"
 const (
 	defaultFilename 		= "untitled"
 	fileExtension	 		= ".viz"
-	defaultCols				= 6
-	defaultRows				= 12
+	defaultCols				= 20
+	defaultRows				= 20
+	viewportCols			= 8
+	viewportRows			= 12
 	hOffset        			= 1
 	vOffset        			= 1
 	minColWidth    			= 8

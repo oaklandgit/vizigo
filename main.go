@@ -37,12 +37,13 @@ func initialGrid() Grid {
 	g := Grid{
 		filename:  *filename,
 		saved:     false,
-		size:      VectorColRow{col: *cols, row: *rows},
-		cells:     map[VectorColRow]Cell{},
-		computed:  map[VectorColRow]string{},
-		cursor:    Cursor{VectorColRow{col: 1, row: 1}, false, -1, ""},
-		selection: []VectorColRow{},
-		history:   []map[VectorColRow]Cell{},
+		size:      Vector{col: *cols, row: *rows},
+		cells:     map[Vector]Cell{},
+		computed:  map[Vector]string{},
+		cursor:    Cursor{Vector{col: 1, row: 1}, false, -1, ""},
+		selection: []Vector{},
+		history:   []map[Vector]Cell{},
+		viewport:  Viewport{Vector{col: viewportCols, row: viewportRows}, Vector{col: 1, row: 1}},
 	}
 
 	g.Load()

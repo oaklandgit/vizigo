@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestPadStringToCenter(t *testing.T) {
 
@@ -91,17 +94,17 @@ func TestSplitAlphaNumeric(t *testing.T) {
     }
 }
 
-func TestAlphaNumericToVectorColRow(t *testing.T) {
+func TestAlphaNumericToPosition(t *testing.T) {
 
-    got := alphaNumericToVectorColRow("A1")
-    want := VectorColRow{row: 1, col: 1}
+    got := alphaNumericToPosition("A1")
+    want := Vector{row: 1, col: 1}
 
     if got != want {
         t.Errorf("YourFunction(\"input\") = %v, want %v", got, want)
     }
 
-    got = alphaNumericToVectorColRow("AA11")
-    want = VectorColRow{row: 11, col: 27}
+    got = alphaNumericToPosition("AA11")
+    want = Vector{row: 11, col: 27}
 
     if got != want {
         t.Errorf("YourFunction(\"input\") = %v, want %v", got, want)
@@ -115,5 +118,30 @@ func TestMaxPrecision(t *testing.T) {
 
     if got != want {
         t.Errorf("YourFunction(\"input\") = %d, want %d", got, want)
+    }
+}
+
+func TestExtractReferences(t *testing.T) {
+    input := "=SUM(AA10:AB12, B3, HH1)"
+    got := extractReferences(input)
+    want := []string{"AA10:AB12", "B3", "HH1"}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("parseReferences(%q) = %v, want %v", input, got, want)
+	}
+}
+
+func TestPositionsFromReferences(t *testing.T) {
+    input := []string{"A1:B2", "B3"}
+    got := positionsFromReferences(input)
+    want := []Vector{
+        {col: 1, row: 1}, // A1
+        {col: 2, row: 1}, // B1
+        {col: 1, row: 2}, // A2
+        {col: 2, row: 2}, // B2
+        {col: 2, row: 3}} // B3
+
+    if !reflect.DeepEqual(got, want) {
+        t.Errorf("parseReferences(%q) = %v, want %v", input, got, want)
     }
 }

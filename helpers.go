@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -72,11 +73,11 @@ func splitAlphaNumeric(s string) (alphaPart string, numericPart string) {
 	return s, ""
 }
 
-func alphaNumericToVectorColRow(s string) VectorColRow {
+func alphaNumericToPosition(s string) Vector {
 	alphaPart, numericPart := splitAlphaNumeric(s)
 	col := lettersToColumn(alphaPart)
 	row, _ := strconv.Atoi(numericPart)
-	return VectorColRow{col: col, row: row}
+	return Vector{col: col, row: row}
 }
 
 func maxPrecision(operands []float64) int {
@@ -98,3 +99,48 @@ func maxPrecision(operands []float64) int {
 	}
 	return max
 }
+
+func extractReferences(s string) []string {
+
+	pattern := `([A-Za-z]+\d+(?:\:[A-Za-z]+\d+)?)+`
+
+	re := regexp.MustCompile(pattern)
+	matches := re.FindAllStringSubmatch(s, -1)
+
+    var groups []string
+    for _, match := range matches {
+        if len(match) > 1 {
+            groups = append(groups, match[1:][0]) // Append only the captured groups
+        }
+    }
+	 
+	return groups
+}
+
+func positionsFromReferences(refs []string) []Vector {
+	
+	positions := []Vector{}
+
+	for _, ref := range refs {
+
+		if strings.Contains(ref, ":") {
+
+			start := alphaNumericToPosition(strings.Split(ref, ":")[0])
+			end := alphaNumericToPosition(strings.Split(ref, ":")[1])
+
+			for row := start.row; row <= end.row; row++ {
+				for col := start.col; col <= end.col; col++ {
+					positions = append(positions, Vector{row: row, col: col})
+				}
+			}
+			
+		} else {
+			positions = append(positions, alphaNumericToPosition(ref))
+
+		}
+	}
+
+	return positions
+
+}
+

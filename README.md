@@ -8,11 +8,12 @@ A command-line spreadsheet written in Go and [BubbleTea](https://github.com/char
 
 ### TO DO
 
-- more unit tests
-- fix calculation algorithm
-- range selection cursors
-- autosuggest
-- help panel
+- comma-separated ranges
+- viewport and scrolling
+- select ranges visually
+- implement full suite of formulae
+- autosuggest formulae
+- export as csv
 - complete unit tests
 
 ### DONE

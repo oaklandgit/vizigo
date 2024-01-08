@@ -8,9 +8,7 @@ func (g Grid) View() string {
 
 	modeString := ""
 	returnString := ""
-	referenced := g.FetchReferencedCells(g.cursor.position.GetCellContent(&g))
-
-
+	referenced := g.fetchReferencedCells(g.cursor.Vector.GetCellContent(&g))
 
 	// Status Bar ////
 	if g.cursor.editMode {
@@ -18,17 +16,22 @@ func (g Grid) View() string {
 	}
 	returnString += fmt.Sprintf("\n%s%s %s",
 		modeString,
-		g.cursor.position.ToString(),
-		g.cursor.position.GetCellContent(&g),
+		g.cursor.Vector.ToString(),
+		g.cursor.Vector.GetCellContent(&g),
 	)
+
+	// find the min of the viewport size and the grid size
+	
+	rowsToRender := g.viewport.offset.row + g.viewport.size.row
+	colsToRender := g.viewport.offset.col + g.viewport.size.col
 
 	// Header ////
 	returnString += "\n" + fmt.Sprintf("%-*s", firstColWidth, " ")
-	for col := hOffset; col < g.size.col + hOffset; col++ {
+	for col := g.viewport.offset.col; col < colsToRender; col++ {
 
 		width := g.WidestCell(col)
 
-		if col == g.cursor.position.col {
+		if col == g.cursor.Vector.col {
 			returnString += ThSelected.Render(padStringToCenter(columnToLetters(col), width))
 		} else {
 			returnString += ThDeselected.Render(padStringToCenter(columnToLetters(col), width))
@@ -36,30 +39,33 @@ func (g Grid) View() string {
 	}
 
 	// Rows ////
-	for row := vOffset; row < g.size.row + vOffset; row++ {
+
+
+
+	for row := g.viewport.offset.row; row < rowsToRender; row++ {
 
 		returnString += "\n"
 
-		if row == g.cursor.position.row {
+		if row == g.cursor.Vector.row {
 			returnString += TrSelected.Render(fmt.Sprintf("%d", row))
 		} else {
 			returnString += TrDeselected.Render(fmt.Sprintf("%d", row))
 		}
 
 		// Columns ////
-		for col := hOffset; col < g.size.col + hOffset; col++ {
+		for col := g.viewport.offset.col; col < colsToRender; col++ {
 
 			// Cell
 
-			v := VectorColRow{col: col, row: row}
+			v := Vector{col: col, row: row}
 			cell := g.cells[v]
 
 			_, isRef := referenced[v]
 
 			if isRef {
-				returnString += cell.Render(&g, &v, true)
+				returnString += cell.Render(&g, v, true)
 			} else {
-				returnString += cell.Render(&g, &v, false)
+				returnString += cell.Render(&g, v, false)
 			}
 
 		}
