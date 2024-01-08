@@ -11,7 +11,7 @@ func (v vector) toString() string {
 }
 
 func (v vector) getCellContent(g *grid, value bool) string {
-		if value {
+	if value {
 		return g.computed[v]
 	} else {
 		return g.cells[v].content

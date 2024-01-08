@@ -32,9 +32,9 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "backspace":
 			g.cursor.backspace(&g)
 		case "ctrl+z":
-			g.Undo()
+			g.undo()
 		case "ctrl+s":
-			g.Save()
+			g.save()
 		case "ctrl+q":
 			return g, tea.Quit
 		default:

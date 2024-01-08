@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+// STRING HELPER TESTS /////////
+
 func TestPadStringToCenter(t *testing.T) {
 
     got := padStringToCenter("hello", 10)
@@ -42,6 +44,8 @@ func TestUnderlineChar(t *testing.T) {
         t.Errorf("YourFunction(\"input\") = %s, want %s", got, want)
     }
 }
+
+// POSITION PARSER TESTS /////////
 
 func TestColumnToLetters(t *testing.T) {
     
@@ -111,16 +115,6 @@ func TestAlphaNumericToPosition(t *testing.T) {
     }
 }
 
-func TestMaxPrecision(t *testing.T) {
-
-    got := maxPrecision([]float64{1.1, 2.22, 3.333, 4.4444})
-    want := 4
-
-    if got != want {
-        t.Errorf("YourFunction(\"input\") = %d, want %d", got, want)
-    }
-}
-
 func TestExtractReferences(t *testing.T) {
     input := "=SUM(AA10:AB12, B3, HH1)"
     got := extractReferences(input)
@@ -143,5 +137,17 @@ func TestPositionsFromReferences(t *testing.T) {
 
     if !reflect.DeepEqual(got, want) {
         t.Errorf("parseReferences(%q) = %v, want %v", input, got, want)
+    }
+}
+
+// CALCULATION HELPER TESTS /////////
+
+func TestMaxPrecision(t *testing.T) {
+
+    got := maxPrecision([]float64{1.1, 2.22, 3.333, 4.4444})
+    want := 4
+
+    if got != want {
+        t.Errorf("YourFunction(\"input\") = %d, want %d", got, want)
     }
 }

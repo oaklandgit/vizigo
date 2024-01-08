@@ -9,6 +9,8 @@ import (
 	"unicode"
 )
 
+// STRING HELPERS /////////
+
 func padStringToCenter(s string, width int) string {
 	if len(s) >= width {
 		return s
@@ -26,19 +28,17 @@ func splitStringAt(s string, i int) (string, string, string, error) {
 }
 
 func underlineChar(s string, i int) string {
-
 	if i < 0 {
 		return s
 	}
-
 	start, underline, end, error := splitStringAt(s, i)
 	if error != nil {
 		log.Fatal(error)
 	}
-
 	return fmt.Sprintf("%s\033[4m%s\033[0m%s", start, underline, end)
-	
 }
+
+// PARSING CELL POSITIONS ETC. /////////
 
 func columnToLetters(n int) string {
 	var result string
@@ -80,30 +80,9 @@ func alphaNumericToPosition(s string) vector {
 	return vector{col: col, row: row}
 }
 
-func maxPrecision(operands []float64) int {
-	
-	max := 0
-
-	for _, operand := range operands {
-		
-		str := strconv.FormatFloat(operand, 'f', -1, 64)
-		parts := strings.Split(str, ".")
-
-		if len(parts) == 2 {
-			decPlaces := len(parts[1])
-			if decPlaces > max {
-				max = decPlaces
-			}
-		}
-
-	}
-	return max
-}
-
 func extractReferences(s string) []string {
 
 	pattern := `([A-Za-z]+\d+(?:\:[A-Za-z]+\d+)?)+`
-
 	re := regexp.MustCompile(pattern)
 	matches := re.FindAllStringSubmatch(s, -1)
 
@@ -113,7 +92,6 @@ func extractReferences(s string) []string {
             groups = append(groups, match[1:][0]) // Append only the captured groups
         }
     }
-	 
 	return groups
 }
 
@@ -142,5 +120,27 @@ func positionsFromReferences(refs []string) []vector {
 
 	return positions
 
+}
+
+// CALCULATION HELPERS /////////
+
+func maxPrecision(operands []float64) int {
+	
+	max := 0
+
+	for _, operand := range operands {
+		
+		str := strconv.FormatFloat(operand, 'f', -1, 64)
+		parts := strings.Split(str, ".")
+
+		if len(parts) == 2 {
+			decPlaces := len(parts[1])
+			if decPlaces > max {
+				max = decPlaces
+			}
+		}
+
+	}
+	return max
 }
 

@@ -32,17 +32,6 @@ func (g *grid) widestCell(col int) int {
 	return widest
 }
 
-func (g *grid) cellFromString(s string) cell {
-
-	alphaPart, numericPart := splitAlphaNumeric(s)
-
-	col := lettersToColumn(alphaPart)
-	row, _ := strconv.Atoi(numericPart)
-
-	return g.cells[vector{row: row, col: col}]
-}
-
-
 func (g *grid) calculate() {
 
 	for position, cell := range g.cells {
@@ -99,6 +88,13 @@ func (g *grid) collectOperands(cells map[vector]cell) ([]float64) {
 	operands := []float64{}
 
 	for _, c := range cells {
+
+		// ignore empty cells in calculations
+		// otherwise, =PROD will always return 0
+		// if there's an empty cell in the range
+		if c.content == "" {
+			continue
+		}
 		content := g.compute(c.content)
 		value, _ := strconv.ParseFloat(content, 64)
 		operands = append(operands, value)
@@ -112,11 +108,11 @@ func (g *grid) clearCells() {
 	g.computed = make(map[vector]string)
 }
 
-func (g *grid) clearCellsAndHistory() {
-	g.cells = make(map[vector]cell)
-	g.computed = make(map[vector]string)
-	g.history = []map[vector]cell{}
-}
+// func (g *grid) clearCellsAndHistory() {
+// 	g.cells = make(map[vector]cell)
+// 	g.computed = make(map[vector]string)
+// 	g.history = []map[vector]cell{}
+// }
 
 func (g *grid) saveForUndo() {
 	cellsCopy := make(map[vector]cell, len(g.cells))
@@ -126,7 +122,7 @@ func (g *grid) saveForUndo() {
 	g.history = append(g.history, cellsCopy)
 }
 
-func (g *grid) Undo() {
+func (g *grid) undo() {
 
 	if len(g.history) == 1 {
 		return
@@ -140,7 +136,7 @@ func (g *grid) Undo() {
 	g.calculate()
 }
 
-func (g *grid) Save() {
+func (g *grid) save() {
 
 	file, err := os.Create(g.filename)
     if err != nil {
@@ -159,7 +155,7 @@ func (g *grid) Save() {
 	g.saved = true
 }
 
-func (g *grid) Load() {
+func (g *grid) load() {
 
 	file, err := os.OpenFile(g.filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {

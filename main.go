@@ -46,7 +46,7 @@ func initialgrid() grid {
 		viewport:  viewport{vector{col: viewportCols, row: viewportRows}, vector{col: 1, row: 1}},
 	}
 
-	g.Load()
+	g.load()
 
 	return g
 }
