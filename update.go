@@ -9,6 +9,8 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "ctrl+h":
+			showHelp = !showHelp
 		case "esc":
 			g.cursor.escape()
 		case "enter":

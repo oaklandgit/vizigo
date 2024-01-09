@@ -11,7 +11,6 @@ import (
 
 func main() {
 
-
 	app := tea.NewProgram(initialgrid())
 	if _, err := app.Run(); err != nil {
 		fmt.Printf("Error bro: %v", err)
@@ -23,6 +22,8 @@ func initialgrid() grid {
 
 	cols := flag.Int("c", defaultCols, "The number of columns")
 	rows := flag.Int("r", defaultRows, "The number of rows")
+	vcols := flag.Int("vc", viewportCols, "The number of columns in the viewport")
+	vrows := flag.Int("vr", viewportRows, "The number of rows in the viewport")
 	filename := flag.String("f", defaultFilename + fileExtension, "The filename to open")
 	flag.Parse()
 
@@ -43,7 +44,7 @@ func initialgrid() grid {
 		cursor:    cursor{vector{col: 1, row: 1}, false, -1, ""},
 		selection: []vector{},
 		history:   []map[vector]cell{},
-		viewport:  viewport{vector{col: viewportCols, row: viewportRows}, vector{col: 1, row: 1}},
+		viewport:  viewport{vector{col: *vcols, row: *vrows}, vector{col: 1, row: 1}},
 	}
 
 	g.load()

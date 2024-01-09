@@ -6,18 +6,29 @@ import (
 
 func (g grid) View() string {
 
-	modeString := ""
 	returnString := ""
-	referenced := g.fetchReferencedCells(g.cursor.vector.getCellContent(&g, false))
+	modeString := ""
+	fileString := ""
 
-	// Status Bar ////
 	if g.cursor.editMode {
 		modeString = "EDIT "
 	}
-	returnString += fmt.Sprintf("\n%s%s %s",
-		modeString,
-		g.cursor.vector.toString(),
-		g.cursor.vector.getCellContent(&g, false),
+
+	if g.saved {
+		fileString = g.filename + " (saved)"
+	} else {
+		fileString = g.filename + " (unsaved)"
+	}
+
+	referenced := g.fetchReferencedCells(g.cursor.vector.getCellContent(&g, false))
+
+	
+
+	// Status Bar ////
+	
+	returnString += fmt.Sprintf("\n%-34s %s\n",
+		modeString + " " + g.cursor.toString() + " " + g.cursor.getCellContent(&g, false),
+		fileString,
 	)
 
 	// find the min of the viewport size and the grid size
@@ -68,13 +79,11 @@ func (g grid) View() string {
 		}
 	}
 
-	if (g.saved) {
-		returnString += "\n\n" + g.filename + " (saved)"
-	} else {
-		returnString += "\n\n" + g.filename + " (unsaved)"
-	}
 
-	returnString += helpText
+	returnString += "\n\nhelp ⌃h\n"
+	if showHelp {
+		returnString += helpText
+	}
 
 	return returnString
 }
