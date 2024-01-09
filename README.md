@@ -6,6 +6,30 @@ A command-line spreadsheet written in Go and [BubbleTea](https://github.com/char
 
 ![demo](demo.gif)
 
+### How to use
+
+```
+flags (on start)      -c <cols> -r <rows>
+                      -vc <viewport cols> -vr <viewport rows>
+                      -f <filename>
+
+enter values          <enter> or <tab> then type numbers
+enter labels          <enter> or <tab> then type letters
+enter formulae        <enter> or <tab> then type =FORMULA()
+                      example: =SUM(A1:B2, B3, C5)
+                      also try: =PROD(), =AVG(), =MIN(), =MAX(), =COUNT()
+
+move                  → ← ↑ ↓
+edit                  <enter> or <tab>
+                      <esc> to exit edit mode
+copy                  ⌃c
+copy value only       ⌃n
+paste                 ⌃v
+
+save                  ⌃s
+quit                  ⌃q
+```
+
 ### TO DO
 
 - select ranges visually
