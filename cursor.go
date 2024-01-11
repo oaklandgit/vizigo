@@ -1,5 +1,7 @@
 package main
 
+import "unicode/utf8"
+
 type cursor struct {
 	vector
 	editMode  bool
@@ -93,7 +95,7 @@ func (c *cursor) right(g *grid) {
 		if c.col == g.viewport.size.col + g.viewport.offset.col  {
 			g.viewport.offset.col++
 		}
-	} else if c.editMode && c.editIndex < len(c.getCellContent(g, false)) -1 {
+	} else if c.editMode && c.editIndex < utf8.RuneCountInString(c.getCellContent(g, false)) -1 {
 		c.editIndex++
 	}
 }
@@ -130,7 +132,7 @@ func (c *cursor) backspace(g *grid) {
 
 		before := c.getCellContent(g, false)[:c.editIndex + 1]
 		after := c.getCellContent(g, false)[c.editIndex + 1:]
-		c.setCellContent(g, before[:len(before) -1] + after)
+		c.setCellContent(g, before[:utf8.RuneCountInString(before) -1] + after)
 		c.editIndex--
 		
 	}

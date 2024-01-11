@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 type grid struct {
@@ -25,8 +26,8 @@ func (g *grid) widestCellInCol(col int) int {
 	widest := minColWidth
 	for row := 1; row < g.size.row; row++ {
 		v := vector{row: row, col: col}
-		if len(g.computed[v]) > widest {
-			widest = len(g.computed[v])
+		if thisWidth := utf8.RuneCountInString(g.computed[v]); thisWidth > widest {
+			widest = thisWidth
 		}
 	}
 	return widest

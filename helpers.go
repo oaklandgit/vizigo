@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 // STRING HELPERS /////////
@@ -15,13 +16,13 @@ func padStringToCenter(s string, width int) string {
 	if len(s) >= width {
 		return s
 	}
-	leftPadding := (width - len(s)) / 2
-	rightPadding := width - len(s) - leftPadding
+	leftPadding := (width - utf8.RuneCountInString(s)) / 2
+	rightPadding := width - utf8.RuneCountInString(s) - leftPadding
 	return strings.Repeat(" ", leftPadding) + s + strings.Repeat(" ", rightPadding)
 }
 
 func splitStringAt(s string, i int) (string, string, string, error) {
-	if i < 0 || i > len(s) {
+	if i < 0 || i > utf8.RuneCountInString(s) {
 		return "", "", "", fmt.Errorf("can't split string at %d", i)
 	}
 	return s[:i], s[i : i+1], s[i+1:], nil
