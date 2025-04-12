@@ -9,30 +9,30 @@ type cell struct {
 	content string
 }
 
-func (c *cell) render(g *grid, v vector, referenced bool) string {
+func (c *cell) render(s *sheet, v vector, referenced bool) string {
 
 	fmtStr := ""
 
-	if _, err := strconv.ParseFloat(g.computed[v], 64); err == nil {
+	if _, err := strconv.ParseFloat(s.computed[v], 64); err == nil {
 		fmtStr = "%*s" // numeric, so right align
 	} else {
 		fmtStr = "%-*s" // not numeric, so left align
 	}
 
-	width := g.widestCellInCol(v.col)
+	width := s.widestCellInCol(v.col)
 
-	if g.cursor.vector == v {
+	if s.cursor.vector == v {
 
-		if g.cursor.editMode {
-			return cursorEditMode.Render(fmt.Sprintf(fmtStr, width, underlineChar(c.content, g.cursor.editIndex)))
+		if s.cursor.editMode {
+			return cursorEditMode.Render(fmt.Sprintf(fmtStr, width, underlineChar(c.content, s.cursor.editIndex)))
 		}
-		return cursorSelected.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
+		return cursorSelected.Render(fmt.Sprintf(fmtStr, width, s.computed[v]))
 	}
 	
 	if referenced {
-		return cellReferenced.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
+		return cellReferenced.Render(fmt.Sprintf(fmtStr, width, s.computed[v]))
 	}
 	
-	return cursorDeselected.Render(fmt.Sprintf(fmtStr, width, g.computed[v]))
+	return cursorDeselected.Render(fmt.Sprintf(fmtStr, width, s.computed[v]))
 	
 }

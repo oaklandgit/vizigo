@@ -11,14 +11,14 @@ import (
 
 func main() {
 
-	app := tea.NewProgram(initialgrid())
+	app := tea.NewProgram(initialSheet())
 	if _, err := app.Run(); err != nil {
 		fmt.Printf("Error bro: %v", err)
 		os.Exit(1)
 	}
 }
 
-func initialgrid() grid {
+func initialSheet() sheet {
 
 	cols := flag.Int("c", defaultCols, "The number of columns")
 	rows := flag.Int("r", defaultRows, "The number of rows")
@@ -35,7 +35,7 @@ func initialgrid() grid {
 		*filename = *filename + fileExtension
 	}
 
-	g := grid{
+	s := sheet{
 		filename:  *filename,
 		saved:     false,
 		size:      vector{col: *cols, row: *rows},
@@ -47,7 +47,7 @@ func initialgrid() grid {
 		viewport:  viewport{vector{col: *vcols, row: *vrows}, vector{col: 1, row: 1}},
 	}
 
-	g.load()
+	s.load()
 
-	return g
+	return s
 }

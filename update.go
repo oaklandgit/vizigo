@@ -4,7 +4,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s sheet) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -12,39 +12,39 @@ func (g grid) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+h":
 			showHelp = !showHelp
 		case "esc":
-			g.cursor.escape()
+			s.cursor.escape()
 		case "enter":
-			g.cursor.enter(&g)
+			s.cursor.enter(&s)
 		case "up":
-			g.cursor.up(&g)
+			s.cursor.up(&s)
 		case "down":
-			g.cursor.down(&g)
+			s.cursor.down(&s)
 		case "left":
-			g.cursor.left(&g)
+			s.cursor.left(&s)
 		case "right":
-			g.cursor.right(&g)
+			s.cursor.right(&s)
 		case "tab":
-			g.cursor.tab(&g)
+			s.cursor.tab(&s)
 		case "ctrl+c":
-			g.cursor.copy(&g)
+			s.cursor.copy(&s)
 		case "ctrl+n":
-			g.cursor.copyValue(&g)
+			s.cursor.copyValue(&s)
 		case "ctrl+v":
-			g.cursor.paste(&g)
+			s.cursor.paste(&s)
 		case "backspace":
-			g.cursor.backspace(&g)
+			s.cursor.backspace(&s)
 		case "ctrl+z":
-			g.undo()
+			s.undo()
 		case "ctrl+s":
-			g.save()
+			s.save()
 		case "ctrl+q":
-			return g, tea.Quit
+			return s, tea.Quit
 		default:
-			g.cursor.textEntry(&g, msg.String())
+			s.cursor.textEntry(&s, msg.String())
 		}
 
 	}
 
-	g.calculate()
-	return g, nil
+	s.calculate()
+	return s, nil
 }

@@ -4,45 +4,45 @@ import (
 	"fmt"
 )
 
-func (g grid) View() string {
+func (s sheet) View() string {
 
 	returnString := ""
 	modeString := ""
 	fileString := ""
 
-	if g.cursor.editMode {
+	if s.cursor.editMode {
 		modeString = "EDIT "
 	}
 
-	if g.saved {
-		fileString = g.filename + " (saved)"
+	if s.saved {
+		fileString = s.filename + " (saved)"
 	} else {
-		fileString = g.filename + " (unsaved)"
+		fileString = s.filename + " (unsaved)"
 	}
 
-	referenced := g.fetchReferencedCells(g.cursor.vector.getCellContent(&g, false))
+	referenced := s.fetchReferencedCells(s.cursor.vector.getCellContent(&s, false))
 
 	
 
 	// Status Bar ////
 	
 	returnString += fmt.Sprintf("\n%-34s %s\n",
-		modeString + " " + g.cursor.toString() + " " + g.cursor.getCellContent(&g, false),
+		modeString + " " + s.cursor.toString() + " " + s.cursor.getCellContent(&s, false),
 		fileString,
 	)
 
-	// find the min of the viewport size and the grid size
+	// find the min of the viewport size and the sheet size
 	
-	rowsToRender := g.viewport.offset.row + g.viewport.size.row
-	colsToRender := g.viewport.offset.col + g.viewport.size.col
+	rowsToRender := s.viewport.offset.row + s.viewport.size.row
+	colsToRender := s.viewport.offset.col + s.viewport.size.col
 
 	// Header ////
 	returnString += "\n" + fmt.Sprintf("%-*s", firstColWidth, " ")
-	for col := g.viewport.offset.col; col < colsToRender; col++ {
+	for col := s.viewport.offset.col; col < colsToRender; col++ {
 
-		width := g.widestCellInCol(col)
+		width := s.widestCellInCol(col)
 
-		if col == g.cursor.vector.col {
+		if col == s.cursor.vector.col {
 			returnString += ThSelected.Render(padStringToCenter(columnToLetters(col), width))
 		} else {
 			returnString += ThDeselected.Render(padStringToCenter(columnToLetters(col), width))
@@ -50,30 +50,30 @@ func (g grid) View() string {
 	}
 
 	// Rows ////
-	for row := g.viewport.offset.row; row < rowsToRender; row++ {
+	for row := s.viewport.offset.row; row < rowsToRender; row++ {
 
 		returnString += "\n"
 
-		if row == g.cursor.vector.row {
+		if row == s.cursor.vector.row {
 			returnString += TrSelected.Render(fmt.Sprintf("%d", row))
 		} else {
 			returnString += TrDeselected.Render(fmt.Sprintf("%d", row))
 		}
 
 		// Columns ////
-		for col := g.viewport.offset.col; col < colsToRender; col++ {
+		for col := s.viewport.offset.col; col < colsToRender; col++ {
 
 			// cell
 
 			v := vector{col: col, row: row}
-			cell := g.cells[v]
+			cell := s.cells[v]
 
 			_, isRef := referenced[v]
 
 			if isRef {
-				returnString += cell.render(&g, v, true)
+				returnString += cell.render(&s, v, true)
 			} else {
-				returnString += cell.render(&g, v, false)
+				returnString += cell.render(&s, v, false)
 			}
 
 		}

@@ -10,7 +10,7 @@ import (
 	"unicode/utf8"
 )
 
-type grid struct {
+type sheet struct {
 	filename 	string
 	saved 		bool
 	size	 	vector
@@ -22,46 +22,46 @@ type grid struct {
 	viewport 	viewport
 }
 
-func (g *grid) widestCellInCol(col int) int {
+func (s *sheet) widestCellInCol(col int) int {
 	widest := minColWidth
-	for row := 1; row < g.size.row; row++ {
+	for row := 1; row < s.size.row; row++ {
 		v := vector{row: row, col: col}
-		if thisWidth := utf8.RuneCountInString(g.computed[v]); thisWidth > widest {
+		if thisWidth := utf8.RuneCountInString(s.computed[v]); thisWidth > widest {
 			widest = thisWidth
 		}
 	}
 	return widest
 }
 
-func (g *grid) calculate() {
+func (s *sheet) calculate() {
 
-	for position, cell := range g.cells {
-		g.computed[position] = g.compute(cell.content)
+	for position, cell := range s.cells {
+		s.computed[position] = s.compute(cell.content)
 	}
 
 }
 
-func (g *grid) fetchReferencedCells(s string) (map[vector]cell) {
+func (s *sheet) fetchReferencedCells(str string) (map[vector]cell) {
 	
 	refcells := make(map[vector]cell)
 
-	refs := extractReferences(s)
+	refs := extractReferences(str)
 	positions := positionsFromReferences(refs)
 
 	for _, position := range positions {
-		refcells[position] = g.cells[position]
+		refcells[position] = s.cells[position]
 	}
 
 	return refcells
 }
 
-func (g *grid) compute(s string) string {
+func (s *sheet) compute(str string) string {
 
-	operands := g.collectOperands(g.fetchReferencedCells(s))
-	formula := strings.ToUpper(strings.Split(s, "(")[0])
+	operands := s.collectOperands(s.fetchReferencedCells(str))
+	formula := strings.ToUpper(strings.Split(str, "(")[0])
 
 	if len(operands) == 0 {
-		return s
+		return str
 	}
 
 	result := 0.00
@@ -84,7 +84,7 @@ func (g *grid) compute(s string) string {
 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
 }
 
-func (g *grid) collectOperands(cells map[vector]cell) ([]float64) {
+func (s *sheet) collectOperands(cells map[vector]cell) ([]float64) {
 
 	operands := []float64{}
 
@@ -96,7 +96,7 @@ func (g *grid) collectOperands(cells map[vector]cell) ([]float64) {
 		if c.content == "" {
 			continue
 		}
-		content := g.compute(c.content)
+		content := s.compute(c.content)
 		value, _ := strconv.ParseFloat(content, 64)
 		operands = append(operands, value)
 	}
@@ -104,48 +104,48 @@ func (g *grid) collectOperands(cells map[vector]cell) ([]float64) {
 	return operands
 }
 
-func (g *grid) clearCells() {
-	g.cells = make(map[vector]cell)
-	g.computed = make(map[vector]string)
+func (s *sheet) clearCells() {
+	s.cells = make(map[vector]cell)
+	s.computed = make(map[vector]string)
 }
 
-// func (g *grid) clearCellsAndHistory() {
+// func (g *sheet) clearCellsAndHistory() {
 // 	g.cells = make(map[vector]cell)
 // 	g.computed = make(map[vector]string)
 // 	g.history = []map[vector]cell{}
 // }
 
-func (g *grid) saveForUndo() {
-	cellsCopy := make(map[vector]cell, len(g.cells))
-	for p, c := range g.cells {
+func (s *sheet) saveForUndo() {
+	cellsCopy := make(map[vector]cell, len(s.cells))
+	for p, c := range s.cells {
 		cellsCopy[p] = c
 	}
-	g.history = append(g.history, cellsCopy)
+	s.history = append(s.history, cellsCopy)
 }
 
-func (g *grid) undo() {
+func (s *sheet) undo() {
 
-	if len(g.history) == 1 {
+	if len(s.history) == 1 {
 		return
 	}
 
-	g.saved = false
+	s.saved = false
 
-	g.clearCells()
-	g.history = g.history[:len(g.history)-1]
-	g.cells = g.history[len(g.history)-1]
-	g.calculate()
+	s.clearCells()
+	s.history = s.history[:len(s.history)-1]
+	s.cells = s.history[len(s.history)-1]
+	s.calculate()
 }
 
-func (g *grid) save() {
+func (s *sheet) save() {
 
-	file, err := os.Create(g.filename)
+	file, err := os.Create(s.filename)
     if err != nil {
         log.Fatal(err)
     }
     defer file.Close()
 
-    for pos, cell := range g.cells {
+    for pos, cell := range s.cells {
         line := fmt.Sprintf("%s%d@%s\n", columnToLetters(pos.col), pos.row, cell.content)
         _, err := file.WriteString(line)
         if err != nil {
@@ -153,30 +153,30 @@ func (g *grid) save() {
         }
     }
 
-	g.saved = true
+	s.saved = true
 }
 
-func (g *grid) load() {
+func (s *sheet) load() {
 
-	file, err := os.OpenFile(g.filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	file, err := os.OpenFile(s.filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 
-	g.cells = map[vector]cell{}
+	s.cells = map[vector]cell{}
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		parts := strings.Split(scanner.Text(), "@")
-		g.cells[alphaNumericToPosition(parts[0])] = cell{content: parts[1]}
+		s.cells[alphaNumericToPosition(parts[0])] = cell{content: parts[1]}
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	g.calculate()
-	g.saveForUndo()
-	g.saved = true
+	s.calculate()
+	s.saveForUndo()
+	s.saved = true
 }

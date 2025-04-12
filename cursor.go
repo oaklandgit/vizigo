@@ -9,130 +9,130 @@ type cursor struct {
 	clipboard string
 }
 
-func (c *cursor) copy(g *grid) {
+func (c *cursor) copy(s *sheet) {
 	c.editMode = false
-	c.clipboard = c.getCellContent(g, false)
+	c.clipboard = c.getCellContent(s, false)
 }
 
-func (c *cursor) copyValue(g *grid) {
+func (c *cursor) copyValue(s *sheet) {
 	c.editMode = false
-	c.clipboard = c.getCellContent(g, true)
+	c.clipboard = c.getCellContent(s, true)
 }
 
-func (c *cursor) paste(g *grid) {
+func (c *cursor) paste(s *sheet) {
 	c.editMode = false
-	c.setCellContent(g, c.clipboard)
-	g.saveForUndo()
+	c.setCellContent(s, c.clipboard)
+	s.saveForUndo()
 }
 
-func (c *cursor) enter(g *grid) {
+func (c *cursor) enter(s *sheet) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
-		if c.row < g.size.row {
+		if c.row < s.size.row {
 			c.row++
 		}
-		g.saveForUndo()
+		s.saveForUndo()
 	} else {
 		c.editMode = true
 	}
 }
 
-func (c *cursor) tab(g *grid) {
+func (c *cursor) tab(s *sheet) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
-		if c.col < g.size.col {
+		if c.col < s.size.col {
 			c.col++
 		}
-		g.saveForUndo()
+		s.saveForUndo()
 	} else {
 		c.editMode = true
 	}
 }
 
-func (c *cursor) up(g *grid) {
+func (c *cursor) up(s *sheet) {
 	c.editMode = false
 	c.editIndex = -1
 	if c.row > 1 {
 		c.row--
-		if c.row < g.viewport.offset.row  {
-			g.viewport.offset.row--
+		if c.row < s.viewport.offset.row  {
+			s.viewport.offset.row--
 		}
 	}
 }
 
-func (c *cursor) down(g *grid) {
+func (c *cursor) down(s *sheet) {
 	c.editMode = false
 	c.editIndex = -1
-	if c.row < g.size.row {
+	if c.row < s.size.row {
 		c.row++
-		if c.row == g.viewport.size.row + g.viewport.offset.row  {
-			g.viewport.offset.row++
+		if c.row == s.viewport.size.row + s.viewport.offset.row  {
+			s.viewport.offset.row++
 		}
 	}
 
 
 }
 
-func (c *cursor) left(g *grid) {
+func (c *cursor) left(s *sheet) {
 	if !c.editMode && c.col > 1 {
 		c.col--
 
-		if c.col < g.viewport.offset.col {
-			g.viewport.offset.col--
+		if c.col < s.viewport.offset.col {
+			s.viewport.offset.col--
 		}
 	} else if c.editMode && c.editIndex > -1 {
 			c.editIndex--
 	}
 }
 
-func (c *cursor) right(g *grid) {
-	if !c.editMode && c.col < g.size.col {
+func (c *cursor) right(s *sheet) {
+	if !c.editMode && c.col < s.size.col {
 		
 		c.col++
 
-		if c.col == g.viewport.size.col + g.viewport.offset.col  {
-			g.viewport.offset.col++
+		if c.col == s.viewport.size.col + s.viewport.offset.col  {
+			s.viewport.offset.col++
 		}
-	} else if c.editMode && c.editIndex < utf8.RuneCountInString(c.getCellContent(g, false)) -1 {
+	} else if c.editMode && c.editIndex < utf8.RuneCountInString(c.getCellContent(s, false)) -1 {
 		c.editIndex++
 	}
 }
 
 
 
-func (c *cursor) textEntry(g *grid, s string) {
+func (c *cursor) textEntry(s *sheet, str string) {
 	if !c.editMode || c.editIndex == maxEntryLength {
 		return
 	}
 
 	c.editIndex++
 
-	before := c.getCellContent(g, false)[:c.editIndex]
-	after := c.getCellContent(g, false)[c.editIndex:]
+	before := c.getCellContent(s, false)[:c.editIndex]
+	after := c.getCellContent(s, false)[c.editIndex:]
 
-	c.setCellContent(g, before + s + after)
+	c.setCellContent(s, before + str + after)
 
 }
 
-func (c *cursor) clear(g *grid) {
-	delete(g.cells, c.vector)
-	delete(g.computed, c.vector)
-	g.saveForUndo()
+func (c *cursor) clear(s *sheet) {
+	delete(s.cells, c.vector)
+	delete(s.computed, c.vector)
+	s.saveForUndo()
 }
 
-func (c *cursor) backspace(g *grid) {
+func (c *cursor) backspace(s *sheet) {
 	if !c.editMode {
-		c.clear(g)
+		c.clear(s)
 		return
 	}
 
 	if c.editIndex > -1 {
 
-		before := c.getCellContent(g, false)[:c.editIndex + 1]
-		after := c.getCellContent(g, false)[c.editIndex + 1:]
-		c.setCellContent(g, before[:utf8.RuneCountInString(before) -1] + after)
+		before := c.getCellContent(s, false)[:c.editIndex + 1]
+		after := c.getCellContent(s, false)[c.editIndex + 1:]
+		c.setCellContent(s, before[:utf8.RuneCountInString(before) -1] + after)
 		c.editIndex--
 		
 	}

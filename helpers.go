@@ -12,27 +12,27 @@ import (
 
 // STRING HELPERS /////////
 
-func padStringToCenter(s string, width int) string {
-	if len(s) >= width {
-		return s
+func padStringToCenter(str string, width int) string {
+	if len(str) >= width {
+		return str
 	}
-	leftPadding := (width - utf8.RuneCountInString(s)) / 2
-	rightPadding := width - utf8.RuneCountInString(s) - leftPadding
-	return strings.Repeat(" ", leftPadding) + s + strings.Repeat(" ", rightPadding)
+	leftPadding := (width - utf8.RuneCountInString(str)) / 2
+	rightPadding := width - utf8.RuneCountInString(str) - leftPadding
+	return strings.Repeat(" ", leftPadding) + str + strings.Repeat(" ", rightPadding)
 }
 
-func splitStringAt(s string, i int) (string, string, string, error) {
-	if i < 0 || i > utf8.RuneCountInString(s) {
+func splitStringAt(str string, i int) (string, string, string, error) {
+	if i < 0 || i > utf8.RuneCountInString(str) {
 		return "", "", "", fmt.Errorf("can't split string at %d", i)
 	}
-	return s[:i], s[i : i+1], s[i+1:], nil
+	return str[:i], str[i : i+1], str[i+1:], nil
 }
 
-func underlineChar(s string, i int) string {
+func underlineChar(str string, i int) string {
 	if i < 0 {
-		return s
+		return str
 	}
-	start, underline, end, error := splitStringAt(s, i)
+	start, underline, end, error := splitStringAt(str, i)
 	if error != nil {
 		log.Fatal(error)
 	}
@@ -51,27 +51,27 @@ func columnToLetters(n int) string {
 	return result
 }
 
-func lettersToColumn(s string) int {
+func lettersToColumn(str string) int {
 	var result int
-	for _, c := range s {
+	for _, c := range str {
 		result *= 26
 		result += int(c) - 'A' + 1
 	}
 	return result
 }
 
-func splitAlphaNumeric(s string) (alphaPart string, numericPart string) {
+func splitAlphaNumeric(str string) (alphaPart string, numericPart string) {
 	splitIndex := -1
-	for i, char := range s {
+	for i, char := range str {
 		if unicode.IsDigit(char) {
 			splitIndex = i
 			break
 		}
 	}
 	if splitIndex != -1 {
-		return s[:splitIndex], s[splitIndex:]
+		return str[:splitIndex], str[splitIndex:]
 	}
-	return s, ""
+	return str, ""
 }
 
 func alphaNumericToPosition(s string) vector {

@@ -10,15 +10,15 @@ func (v vector) toString() string {
 	return columnToLetters(v.col) + strconv.Itoa(v.row)
 }
 
-func (v vector) getCellContent(g *grid, value bool) string {
+func (v vector) getCellContent(s *sheet, value bool) string {
 	if value {
-		return g.computed[v]
+		return s.computed[v]
 	} else {
-		return g.cells[v].content
+		return s.cells[v].content
 	}
 }
 
-func (v vector) setCellContent(g *grid, content string) {
-	g.cells[v] = cell{content: content}
-	g.saved = false
+func (v vector) setCellContent(s *sheet, content string) {
+	s.cells[v] = cell{content: content}
+	s.saved = false
 }
