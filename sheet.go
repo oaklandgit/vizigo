@@ -55,34 +55,34 @@ func (s *sheet) fetchReferencedCells(str string) (map[vector]cell) {
 	return refcells
 }
 
-func (s *sheet) compute(str string) string {
+// func (s *sheet) compute(str string) string {
 
-	operands := s.collectOperands(s.fetchReferencedCells(str))
-	formula := strings.ToUpper(strings.Split(str, "(")[0])
+// 	operands := s.collectOperands(s.fetchReferencedCells(str))
+// 	formula := strings.ToUpper(strings.Split(str, "(")[0])
 
-	if len(operands) == 0 {
-		return str
-	}
+// 	if len(operands) == 0 {
+// 		return str
+// 	}
 
-	result := 0.00
+// 	result := 0.00
 
-	switch formula {
-	case "=SUM":
-		result = sum(operands)
-	case "=PROD":
-		result = product(operands)
-	case "=MAX":
-		result = max(operands)
-	case "=MIN":
-		result = min(operands)
-	case "=AVG":
-		result = average(operands)
-	case "=COUNT":
-		result = count(operands)
-	}
+// 	switch formula {
+// 	case "=SUM":
+// 		result = sum(operands)
+// 	case "=PROD":
+// 		result = product(operands)
+// 	case "=MAX":
+// 		result = max(operands)
+// 	case "=MIN":
+// 		result = min(operands)
+// 	case "=AVG":
+// 		result = average(operands)
+// 	case "=COUNT":
+// 		result = count(operands)
+// 	}
 
-	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
-}
+// 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
+// }
 
 func (s *sheet) collectOperands(cells map[vector]cell) ([]float64) {
 
