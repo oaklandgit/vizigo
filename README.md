@@ -2,7 +2,9 @@
 
 **WORK IN PROGRESS**
 
-A command-line spreadsheet written in Go and [BubbleTea](https://github.com/charmbracelet/bubbletea)
+A command-line spreadsheet written in Go and [BubbleTea](https://github.com/charmbracelet/bubbletea) and leveraging the power of [Expr](https://expr-lang.org/)]
+
+Vizigo utilizes the powerful [Expr language](https://expr-lang.org). See a full list of expressions [here](https://expr-lang.org/docs/language-definition)
 
 ![demo](demo.gif)
 
@@ -15,9 +17,9 @@ flags (on start)      -c <cols> -r <rows>
 
 enter values          <enter> or <tab> then type numbers
 enter labels          <enter> or <tab> then type letters
-enter formulae        <enter> or <tab> then type =FORMULA()
-                      example: =SUM(A1:B2, B3, C5)
-                      also try: =PROD(), =AVG(), =MIN(), =MAX(), =COUNT()
+enter expression      <enter> or <tab> then type =expression
+                      e.g. =min(A3:B5)
+                      use any EXPR expression (see expr-lang.org)
 
 move                  → ← ↑ ↓
 edit                  <enter> or <tab>
@@ -28,18 +30,20 @@ paste                 ⌃v
 
 save                  ⌃s
 quit                  ⌃q
+
 ```
 
 ### TO DO
 
+- implement functions not available in EXPR (such as prod, sum, avg)
 - select ranges visually
-- implement simple arithmetic (not just functions)
 - autosuggest formulae
 - export as csv
 - complete unit tests
 
 ### DONE
 
+- implement simple arithmetic (not just functions) // via expr language
 - viewport and scrolling
 - implement SUM, PRODUCT, AVERAGE, MIN, MAX, COUNT
 - comma-separated ranges

@@ -21,11 +21,15 @@ const (
 var showHelp = false
 
 var helpText = `
+flags (on start)      -c <cols> -r <rows>
+                      -vc <viewport cols> -vr <viewport rows>
+                      -f <filename>
+
 enter values          <enter> or <tab> then type numbers
 enter labels          <enter> or <tab> then type letters
-enter formulae        <enter> or <tab> then type =FORMULA()
-                      example: =SUM(A1:B2, B3, C5)
-                      also try: =PROD(), =AVG(), =MIN(), =MAX(), =COUNT()
+enter expression      <enter> or <tab> then type =expression
+                      e.g. =min(A3:B5)
+                      use any EXPR expression (see expr-lang.org)
 
 move                  → ← ↑ ↓
 edit                  <enter> or <tab>
@@ -36,6 +40,4 @@ paste                 ⌃v
 
 save                  ⌃s
 quit                  ⌃q
-
-flags (on start)      -c <cols> -r <rows> -vc <viewport cols> -vr <viewport rows> -f <filename>
 `
