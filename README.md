@@ -2,7 +2,7 @@
 
 **WORK IN PROGRESS**
 
-A command-line spreadsheet written in Go and [BubbleTea](https://github.com/charmbracelet/bubbletea) and leveraging the power of [Expr](https://expr-lang.org/)]
+An intuitive command-line spreadsheet written in Go and [BubbleTea](https://github.com/charmbracelet/bubbletea) that leverages the powerful expression language [Expr](https://expr-lang.org/).
 
 ![demo](demo.gif)
 
