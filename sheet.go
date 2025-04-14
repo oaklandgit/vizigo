@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -84,25 +83,25 @@ func (s *sheet) fetchReferencedCells(str string) (map[vector]cell) {
 // 	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
 // }
 
-func (s *sheet) collectOperands(cells map[vector]cell) ([]float64) {
+// func (s *sheet) collectOperands(cells map[vector]cell) ([]float64) {
 
-	operands := []float64{}
+// 	operands := []float64{}
 
-	for _, c := range cells {
+// 	for _, c := range cells {
 
-		// ignore empty cells in calculations
-		// otherwise, =PROD will always return 0
-		// if there's an empty cell in the range
-		if c.content == "" {
-			continue
-		}
-		content := s.compute(c.content)
-		value, _ := strconv.ParseFloat(content, 64)
-		operands = append(operands, value)
-	}
+// 		// ignore empty cells in calculations
+// 		// otherwise, =PROD will always return 0
+// 		// if there's an empty cell in the range
+// 		if c.content == "" {
+// 			continue
+// 		}
+// 		content := s.compute(c.content)
+// 		value, _ := strconv.ParseFloat(content, 64)
+// 		operands = append(operands, value)
+// 	}
 
-	return operands
-}
+// 	return operands
+// }
 
 func (s *sheet) clearCells() {
 	s.cells = make(map[vector]cell)

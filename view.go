@@ -35,6 +35,10 @@ func (s sheet) View() string {
 	
 	rowsToRender := s.viewport.offset.row + s.viewport.size.row
 	colsToRender := s.viewport.offset.col + s.viewport.size.col
+	
+
+	// rowsToRender := int(min([]float64{float64(rangeExpr.Start.row), float64(rangeExpr.End.row)}))
+	// maxRow := int(max([]float64{float64(rangeExpr.Start.row), float64(rangeExpr.End.row)}))
 
 	// Header ////
 	returnString += "\n" + fmt.Sprintf("%-*s", firstColWidth, " ")

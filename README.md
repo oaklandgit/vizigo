@@ -32,6 +32,7 @@ quit                  ⌃q
 
 ### TO DO
 
+- use https://expr-lang.org/ for parsing expressions
 - select ranges visually
 - implement simple arithmetic (not just functions)
 - autosuggest formulae
