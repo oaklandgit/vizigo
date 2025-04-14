@@ -4,8 +4,6 @@
 
 A command-line spreadsheet written in Go and [BubbleTea](https://github.com/charmbracelet/bubbletea) and leveraging the power of [Expr](https://expr-lang.org/)]
 
-Vizigo utilizes the powerful [Expr language](https://expr-lang.org). See a full list of expressions [here](https://expr-lang.org/docs/language-definition)
-
 ![demo](demo.gif)
 
 ### How to use
