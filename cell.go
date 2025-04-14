@@ -9,6 +9,10 @@ type cell struct {
 	content string
 }
 
+func (c *cell) getRawContent() string {
+	return c.content
+}
+
 func (c *cell) render(s *sheet, v vector, referenced bool) string {
 
 	fmtStr := ""

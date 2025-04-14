@@ -45,6 +45,6 @@ func (s sheet) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	}
 
-	s.calculate()
+	s.recalculate()
 	return s, nil
 }

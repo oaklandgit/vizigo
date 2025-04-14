@@ -123,25 +123,51 @@ func positionsFromReferences(refs []string) []vector {
 
 }
 
-// CALCULATION HELPERS /////////
-
-func maxPrecision(operands []float64) int {
-	
-	max := 0
-
-	for _, operand := range operands {
-		
-		str := strconv.FormatFloat(operand, 'f', -1, 64)
-		parts := strings.Split(str, ".")
-
-		if len(parts) == 2 {
-			decPlaces := len(parts[1])
-			if decPlaces > max {
-				max = decPlaces
+func expandRangeReferences(expr string) string {
+	// Use a regex to match range references in the form "A1:B3"
+	rangeRegex := regexp.MustCompile(`[A-Za-z]+\d+:[A-Za-z]+\d+`)
+	return rangeRegex.ReplaceAllStringFunc(expr, func(match string) string {
+		parts := strings.Split(match, ":")
+		if len(parts) != 2 {
+			// If something is unexpected, leave the match unchanged.
+			return match
+		}
+		// Convert start and end cell references to positions.
+		startPos := alphaNumericToPosition(parts[0])
+		endPos := alphaNumericToPosition(parts[1])
+		var refs []string
+		// Iterate rows and columns, assuming startPos is the top‐left 
+		// and endPos is the bottom‐right cell of the range.
+		for row := startPos.row; row <= endPos.row; row++ {
+			for col := startPos.col; col <= endPos.col; col++ {
+				refs = append(refs, columnToLetters(col)+strconv.Itoa(row))
 			}
 		}
-
-	}
-	return max
+		// Join the individual references with commas.
+		return strings.Join(refs, ",")
+	})
 }
+
+
+// CALCULATION HELPERS /////////
+
+// func maxPrecision(operands []float64) int {
+	
+// 	max := 0
+
+// 	for _, operand := range operands {
+		
+// 		str := strconv.FormatFloat(operand, 'f', -1, 64)
+// 		parts := strings.Split(str, ".")
+
+// 		if len(parts) == 2 {
+// 			decPlaces := len(parts[1])
+// 			if decPlaces > max {
+// 				max = decPlaces
+// 			}
+// 		}
+
+// 	}
+// 	return max
+// }
 

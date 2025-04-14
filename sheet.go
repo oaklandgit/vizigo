@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
+	"regexp"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/expr-lang/expr"
 )
 
 type sheet struct {
@@ -33,14 +35,56 @@ func (s *sheet) widestCellInCol(col int) int {
 	return widest
 }
 
-func (s *sheet) calculate() {
-
+// recalculate computes the values for all cells in the sheet
+// TO DO: ensure that the cells are not circularly referenced
+func (s *sheet) recalculate() {
 	for position, cell := range s.cells {
-		s.computed[position] = s.compute(cell.content)
+		s.computed[position] = s.evaluate(cell.getRawContent())
 	}
-
 }
 
+
+
+// replaces all cell references in the expression with their computed values
+func (s *sheet) replaceCellReferences(expr string) string {
+	regex := regexp.MustCompile(`\b[A-Za-z]+\d+\b`) // e.g. "A1", "B2", etc.
+	return regex.ReplaceAllStringFunc(expr, func(match string) string {
+
+		cell := s.cells[alphaNumericToPosition(match)]
+		content := cell.getRawContent()
+		if content == "" {
+			// Optionally, return a default value (e.g. "0") for empty cells.
+			return "0"
+		}
+		return s.evaluate(content)
+	})
+}
+
+// expand range references, then replace with computed values
+func (s *sheet) rewriteExpression(expr string) string {
+	expanded := expandRangeReferences(expr)
+	replaced := s.replaceCellReferences(expanded)
+	return replaced
+}
+
+func (s *sheet) evaluate(content string) string {
+	if content == "" {
+		return ""
+	}
+	if content[0] != '=' {
+		return content
+	}
+
+	exprBody := content[1:] // Remove the leading '=' sign
+	rewritten := s.rewriteExpression(exprBody)
+	result, _ := expr.Eval(rewritten, nil)
+
+	return fmt.Sprint(result)
+}
+
+
+// fetchReferencedCells scans the expression for individual cell references (e.g., "A1")
+// and returns a map of the referenced cells.
 func (s *sheet) fetchReferencedCells(str string) (map[vector]cell) {
 	
 	refcells := make(map[vector]cell)
@@ -55,65 +99,10 @@ func (s *sheet) fetchReferencedCells(str string) (map[vector]cell) {
 	return refcells
 }
 
-func (s *sheet) compute(str string) string {
-
-	operands := s.collectOperands(s.fetchReferencedCells(str))
-	formula := strings.ToUpper(strings.Split(str, "(")[0])
-
-	if len(operands) == 0 {
-		return str
-	}
-
-	result := 0.00
-
-	switch formula {
-	case "=SUM":
-		result = sum(operands)
-	case "=PROD":
-		result = product(operands)
-	case "=MAX":
-		result = max(operands)
-	case "=MIN":
-		result = min(operands)
-	case "=AVG":
-		result = average(operands)
-	case "=COUNT":
-		result = count(operands)
-	}
-
-	return fmt.Sprintf("%.*f", maxPrecision(operands), result)
-}
-
-func (s *sheet) collectOperands(cells map[vector]cell) ([]float64) {
-
-	operands := []float64{}
-
-	for _, c := range cells {
-
-		// ignore empty cells in calculations
-		// otherwise, =PROD will always return 0
-		// if there's an empty cell in the range
-		if c.content == "" {
-			continue
-		}
-		content := s.compute(c.content)
-		value, _ := strconv.ParseFloat(content, 64)
-		operands = append(operands, value)
-	}
-
-	return operands
-}
-
 func (s *sheet) clearCells() {
 	s.cells = make(map[vector]cell)
 	s.computed = make(map[vector]string)
 }
-
-// func (g *sheet) clearCellsAndHistory() {
-// 	g.cells = make(map[vector]cell)
-// 	g.computed = make(map[vector]string)
-// 	g.history = []map[vector]cell{}
-// }
 
 func (s *sheet) saveForUndo() {
 	cellsCopy := make(map[vector]cell, len(s.cells))
@@ -134,7 +123,7 @@ func (s *sheet) undo() {
 	s.clearCells()
 	s.history = s.history[:len(s.history)-1]
 	s.cells = s.history[len(s.history)-1]
-	s.calculate()
+	s.recalculate()
 }
 
 func (s *sheet) save() {
@@ -176,7 +165,7 @@ func (s *sheet) load() {
 		log.Fatal(err)
 	}
 
-	s.calculate()
+	s.recalculate()
 	s.saveForUndo()
 	s.saved = true
 }
