@@ -1,2 +1,10 @@
 P7@goodbye
+D6@=(B6+3)-B4
+C3@Goodbye
+D3@Another
 P6@hello
+B4@32
+B5@4
+B6@=B4/B5
+C6@=B6*3
+B3@Hello

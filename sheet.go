@@ -43,8 +43,6 @@ func (s *sheet) recalculate() {
 	}
 }
 
-
-
 // replaces all cell references in the expression with their computed values
 func (s *sheet) replaceCellReferences(expr string) string {
 	regex := regexp.MustCompile(`\b[A-Za-z]+\d+\b`) // e.g. "A1", "B2", etc.
@@ -78,6 +76,10 @@ func (s *sheet) evaluate(content string) string {
 	exprBody := content[1:] // Remove the leading '=' sign
 	rewritten := s.rewriteExpression(exprBody)
 	result, _ := expr.Eval(rewritten, nil)
+
+	if result == nil {
+		return errorText
+	}
 
 	return fmt.Sprint(result)
 }

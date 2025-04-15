@@ -16,6 +16,7 @@ const (
 	darkGrey          		= lipgloss.Color("0")
 	hilite         			= lipgloss.Color("72")
 	globalPrecisionLimit 	= 5 // (decimal places)
+	errorText				= "#ERROR"
 )
 
 var showHelp = false
