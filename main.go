@@ -41,7 +41,7 @@ func initialSheet() sheet {
 		size:       vector{col: *cols, row: *rows},
 		cells:      map[vector]cell{},
 		computed:   map[vector]string{},
-		cursor:     cursor{vector{col: 1, row: 1}, false, -1, ""},
+		cursor:     cursor{vector: vector{col: 1, row: 1}, editIndex: -1},
 		selection:  []vector{},
 		history:    []map[vector]cell{},
 		viewport:   viewport{vector{col: *vcols, row: *vrows}, vector{col: 1, row: 1}},

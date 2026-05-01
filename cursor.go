@@ -4,9 +4,10 @@ import "unicode/utf8"
 
 type cursor struct {
 	vector
-	editMode  bool
-	editIndex int
-	clipboard string
+	editMode      bool
+	editIndex     int
+	clipboard     string
+	replaceOnType bool
 }
 
 func (c *cursor) copy(s *sheet) {
@@ -29,12 +30,14 @@ func (c *cursor) enter(s *sheet) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
+		c.replaceOnType = false
 		if c.row < s.size.row {
 			c.row++
 		}
 		s.saveForUndo()
 	} else {
 		c.editMode = true
+		c.replaceOnType = true
 	}
 }
 
@@ -42,12 +45,14 @@ func (c *cursor) tab(s *sheet) {
 	if c.editMode {
 		c.editMode = false
 		c.editIndex = -1
+		c.replaceOnType = false
 		if c.col < s.size.col {
 			c.col++
 		}
 		s.saveForUndo()
 	} else {
 		c.editMode = true
+		c.replaceOnType = true
 	}
 }
 
@@ -83,7 +88,8 @@ func (c *cursor) left(s *sheet) {
 			s.viewport.offset.col--
 		}
 	} else if c.editMode && c.editIndex > -1 {
-			c.editIndex--
+		c.replaceOnType = false
+		c.editIndex--
 	}
 }
 
@@ -95,7 +101,8 @@ func (c *cursor) right(s *sheet) {
 		if c.col == s.viewport.size.col + s.viewport.offset.col  {
 			s.viewport.offset.col++
 		}
-	} else if c.editMode && c.editIndex < utf8.RuneCountInString(c.getCellContent(s, false)) -1 {
+	} else if c.editMode && c.editIndex < utf8.RuneCountInString(c.getCellContent(s, false))-1 {
+		c.replaceOnType = false
 		c.editIndex++
 	}
 }
@@ -103,7 +110,16 @@ func (c *cursor) right(s *sheet) {
 
 
 func (c *cursor) textEntry(s *sheet, str string) {
-	if !c.editMode || c.editIndex == maxEntryLength {
+	if !c.editMode || c.replaceOnType {
+		s.saveForUndo()
+		delete(s.cells, c.vector)
+		delete(s.computed, c.vector)
+		c.editMode = true
+		c.editIndex = -1
+		c.replaceOnType = false
+	}
+
+	if c.editIndex == maxEntryLength {
 		return
 	}
 
@@ -112,8 +128,7 @@ func (c *cursor) textEntry(s *sheet, str string) {
 	before := c.getCellContent(s, false)[:c.editIndex]
 	after := c.getCellContent(s, false)[c.editIndex:]
 
-	c.setCellContent(s, before + str + after)
-
+	c.setCellContent(s, before+str+after)
 }
 
 func (c *cursor) clear(s *sheet) {
@@ -141,4 +156,5 @@ func (c *cursor) backspace(s *sheet) {
 func (c *cursor) escape() {
 	c.editMode = false
 	c.editIndex = -1
+	c.replaceOnType = false
 }
