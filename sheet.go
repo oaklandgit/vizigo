@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -51,10 +52,15 @@ func (s *sheet) replaceCellReferences(expr string) string {
 		cell := s.cells[alphaNumericToPosition(match)]
 		content := cell.getRawContent()
 		if content == "" {
-			// Optionally, return a default value (e.g. "0") for empty cells.
-			return "0"
+			return "0.0"
 		}
-		return s.evaluate(content)
+		val := s.evaluate(content)
+		// expr-lang parses bare integers as int, not float64, which breaks
+		// variadic float64 function calls like SUM. Force a float literal.
+		if _, err := strconv.Atoi(val); err == nil {
+			return val + ".0"
+		}
+		return val
 	})
 }
 
@@ -75,7 +81,15 @@ func (s *sheet) evaluate(content string) string {
 
 	exprBody := content[1:] // Remove the leading '=' sign
 	rewritten := s.rewriteExpression(exprBody)
-	result, _ := expr.Eval(rewritten, nil)
+	env := map[string]interface{}{
+		"SUM":     sum,
+		"PRODUCT": product,
+		"MAX":     max,
+		"MIN":     min,
+		"AVERAGE": average,
+		"COUNT":   count,
+	}
+	result, _ := expr.Eval(rewritten, env)
 
 	if result == nil {
 		return errorText

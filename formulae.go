@@ -1,6 +1,6 @@
 package main
 
-func sum(operands []float64) float64 {
+func sum(operands ...float64) float64 {
 	total := 0.0
 	for _, f := range operands {
 		total += f
@@ -8,7 +8,7 @@ func sum(operands []float64) float64 {
 	return total
 }
 
-func product(operands []float64) float64 {
+func product(operands ...float64) float64 {
 	total := 1.0
 	for _, f := range operands {
 		total *= f
@@ -16,7 +16,7 @@ func product(operands []float64) float64 {
 	return total
 }
 
-func max(operands []float64) float64 {
+func max(operands ...float64) float64 {
 	max := operands[0]
 	for _, f := range operands {
 		if f > max {
@@ -26,7 +26,7 @@ func max(operands []float64) float64 {
 	return max
 }
 
-func min(operands []float64) float64 {
+func min(operands ...float64) float64 {
 	min := operands[0]
 	for _, f := range operands {
 		if f < min {
@@ -36,10 +36,10 @@ func min(operands []float64) float64 {
 	return min
 }
 
-func average(operands []float64) float64 {
-	return sum(operands) / float64(len(operands))
+func average(operands ...float64) float64 {
+	return sum(operands...) / float64(len(operands))
 }
 
-func count(operands []float64) float64 {
+func count(operands ...float64) float64 {
 	return float64(len(operands))
 }
