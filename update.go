@@ -45,6 +45,8 @@ func (s sheet) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	}
 
-	s.recalculate()
+	if !s.cursor.editMode {
+		s.recalculate()
+	}
 	return s, nil
 }
