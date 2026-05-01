@@ -6,12 +6,14 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 	"unicode/utf8"
 
 	"github.com/expr-lang/expr"
 )
+
+var funcNameRe  = regexp.MustCompile(`\b([A-Za-z]+)\s*\(`)
+var intLiteralRe = regexp.MustCompile(`\b\d+(\.\d+)?\b`)
 
 type sheet struct {
 	filename 	string
@@ -19,6 +21,7 @@ type sheet struct {
 	size	 	vector
 	cells     	map[vector]cell
 	computed 	map[vector]string
+	errors		map[vector]string
 	cursor    	cursor
 	selection 	[]vector
 	history     []map[vector]cell
@@ -38,10 +41,14 @@ func (s *sheet) widestCellInCol(col int) int {
 }
 
 // recalculate computes the values for all cells in the sheet
-// TO DO: ensure that the cells are not circularly referenced
 func (s *sheet) recalculate() {
+	s.errors = map[vector]string{}
 	for position, cell := range s.cells {
-		s.computed[position] = s.evaluate(cell.getRawContent())
+		result, err := s.evaluate(cell.getRawContent())
+		s.computed[position] = result
+		if err != nil {
+			s.errors[position] = err.Error()
+		}
 	}
 }
 
@@ -62,14 +69,8 @@ func (s *sheet) replaceCellReferences(expr string) string {
 		}
 
 		s.evaluating[v] = true
-		val := s.evaluate(content)
+		val, _ := s.evaluate(content)
 		delete(s.evaluating, v)
-
-		// expr-lang parses bare integers as int, not float64, which breaks
-		// variadic float64 function calls like SUM. Force a float literal.
-		if _, err := strconv.Atoi(val); err == nil {
-			return val + ".0"
-		}
 		return val
 	})
 }
@@ -81,31 +82,36 @@ func (s *sheet) rewriteExpression(expr string) string {
 	return replaced
 }
 
-func (s *sheet) evaluate(content string) string {
+func (s *sheet) evaluate(content string) (string, error) {
 	if content == "" {
-		return ""
+		return "", nil
 	}
 	if content[0] != '=' {
-		return content
+		return content, nil
 	}
 
 	exprBody := content[1:] // Remove the leading '=' sign
 	rewritten := s.rewriteExpression(exprBody)
-	env := map[string]interface{}{
-		"SUM":     sum,
-		"PRODUCT": product,
-		"MAX":     max,
-		"MIN":     min,
-		"AVERAGE": average,
-		"COUNT":   count,
-	}
-	result, _ := expr.Eval(rewritten, env)
+	rewritten = funcNameRe.ReplaceAllStringFunc(rewritten, func(m string) string {
+		return strings.ToLower(m[:len(m)-1]) + "("
+	})
+	rewritten = intLiteralRe.ReplaceAllStringFunc(rewritten, func(m string) string {
+		if strings.Contains(m, ".") {
+			return m
+		}
+		return m + ".0"
+	})
+	rewritten = evaluateCustomFunctions(rewritten)
+	result, err := expr.Eval(rewritten, nil)
 
+	if err != nil {
+		return errorText, err
+	}
 	if result == nil {
-		return errorText
+		return errorText, fmt.Errorf("nil result")
 	}
 
-	return fmt.Sprint(result)
+	return fmt.Sprint(result), nil
 }
 
 

@@ -1,5 +1,62 @@
 package main
 
+import (
+	"strconv"
+	"strings"
+	"regexp"
+)
+
+var customFuncRe = regexp.MustCompile(`\b(sum|product|max|min|average|count)\(([^()]*)\)`)
+
+// evaluateCustomFunctions replaces calls to our aggregation functions with
+// their computed values. Applied repeatedly so nested calls resolve inside-out.
+func evaluateCustomFunctions(expression string) string {
+	for {
+		next := customFuncRe.ReplaceAllStringFunc(expression, func(m string) string {
+			parts := customFuncRe.FindStringSubmatch(m)
+			if len(parts) < 3 {
+				return m
+			}
+			name, argsStr := parts[1], parts[2]
+
+			var args []float64
+			for _, a := range strings.Split(argsStr, ",") {
+				f, err := strconv.ParseFloat(strings.TrimSpace(a), 64)
+				if err != nil {
+					return errorText
+				}
+				args = append(args, f)
+			}
+			if len(args) == 0 {
+				return errorText
+			}
+
+			var result float64
+			switch name {
+			case "sum":
+				result = sum(args...)
+			case "product":
+				result = product(args...)
+			case "max":
+				result = max(args...)
+			case "min":
+				result = min(args...)
+			case "average":
+				result = average(args...)
+			case "count":
+				result = count(args...)
+			}
+			return strconv.FormatFloat(result, 'f', -1, 64)
+		})
+
+		if next == expression {
+			break
+		}
+		expression = next
+	}
+	return expression
+}
+
 func sum(operands ...float64) float64 {
 	total := 0.0
 	for _, f := range operands {
@@ -17,23 +74,23 @@ func product(operands ...float64) float64 {
 }
 
 func max(operands ...float64) float64 {
-	max := operands[0]
-	for _, f := range operands {
-		if f > max {
-			max = f
+	m := operands[0]
+	for _, f := range operands[1:] {
+		if f > m {
+			m = f
 		}
 	}
-	return max
+	return m
 }
 
 func min(operands ...float64) float64 {
-	min := operands[0]
-	for _, f := range operands {
-		if f < min {
-			min = f
+	m := operands[0]
+	for _, f := range operands[1:] {
+		if f < m {
+			m = f
 		}
 	}
-	return min
+	return m
 }
 
 func average(operands ...float64) float64 {

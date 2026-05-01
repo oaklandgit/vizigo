@@ -80,6 +80,10 @@ func (s sheet) View() string {
 	}
 
 
+	if errMsg, ok := s.errors[s.cursor.vector]; ok {
+		returnString += "\n" + errMsg
+	}
+
 	returnString += "\n\nhelp ⌃h\n"
 	if showHelp {
 		returnString += helpText
