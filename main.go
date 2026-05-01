@@ -36,15 +36,16 @@ func initialSheet() sheet {
 	}
 
 	s := sheet{
-		filename:  *filename,
-		saved:     false,
-		size:      vector{col: *cols, row: *rows},
-		cells:     map[vector]cell{},
-		computed:  map[vector]string{},
-		cursor:    cursor{vector{col: 1, row: 1}, false, -1, ""},
-		selection: []vector{},
-		history:   []map[vector]cell{},
-		viewport:  viewport{vector{col: *vcols, row: *vrows}, vector{col: 1, row: 1}},
+		filename:   *filename,
+		saved:      false,
+		size:       vector{col: *cols, row: *rows},
+		cells:      map[vector]cell{},
+		computed:   map[vector]string{},
+		cursor:     cursor{vector{col: 1, row: 1}, false, -1, ""},
+		selection:  []vector{},
+		history:    []map[vector]cell{},
+		viewport:   viewport{vector{col: *vcols, row: *vrows}, vector{col: 1, row: 1}},
+		evaluating: map[vector]bool{},
 	}
 
 	s.load()

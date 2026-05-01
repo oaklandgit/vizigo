@@ -23,6 +23,7 @@ type sheet struct {
 	selection 	[]vector
 	history     []map[vector]cell
 	viewport 	viewport
+	evaluating	map[vector]bool
 }
 
 func (s *sheet) widestCellInCol(col int) int {
@@ -49,12 +50,21 @@ func (s *sheet) replaceCellReferences(expr string) string {
 	regex := regexp.MustCompile(`\b[A-Za-z]+\d+\b`) // e.g. "A1", "B2", etc.
 	return regex.ReplaceAllStringFunc(expr, func(match string) string {
 
-		cell := s.cells[alphaNumericToPosition(match)]
+		v := alphaNumericToPosition(match)
+		if s.evaluating[v] {
+			return errorText
+		}
+
+		cell := s.cells[v]
 		content := cell.getRawContent()
 		if content == "" {
 			return "0.0"
 		}
+
+		s.evaluating[v] = true
 		val := s.evaluate(content)
+		delete(s.evaluating, v)
+
 		// expr-lang parses bare integers as int, not float64, which breaks
 		// variadic float64 function calls like SUM. Force a float literal.
 		if _, err := strconv.Atoi(val); err == nil {
