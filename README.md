@@ -33,7 +33,10 @@ quit                  ⌃q
 
 ### TO DO
 
-- implement functions not available in EXPR (such as prod, sum, avg)
+- allow any EXPR function
+- ctl-x to cut
+- accept non float64 numbers as literal operands
+- save as
 - select ranges visually
 - autosuggest formulae
 - export as csv

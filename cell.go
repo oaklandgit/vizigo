@@ -28,7 +28,19 @@ func (c *cell) render(s *sheet, v vector, referenced bool) string {
 	if s.cursor.vector == v {
 
 		if s.cursor.editMode {
-			return cursorEditMode.Render(fmt.Sprintf(fmtStr, width, underlineChar(c.content, s.cursor.editIndex)))
+			// Clip to column width so content never overflows into adjacent cells.
+			// Pad the plain content first so fmt.Sprintf measures correctly,
+			// then apply underlineChar — ANSI codes must not be present during padding
+			// or fmt.Sprintf counts escape bytes as visible characters and skips padding.
+			content := []rune(c.content)
+			editIdx := s.cursor.editIndex
+			if len(content) > width {
+				start := len(content) - width
+				content = content[start:]
+				editIdx -= start
+			}
+			plain := fmt.Sprintf(fmtStr, width, string(content))
+			return cursorEditMode.Render(underlineChar(plain, editIdx))
 		}
 		return cursorSelected.Render(fmt.Sprintf(fmtStr, width, s.computed[v]))
 	}
