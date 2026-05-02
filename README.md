@@ -2,7 +2,9 @@
 
 ![GitHub release](https://img.shields.io/github/v/release/oaklandgit/vizigo?include_prereleases)
 
-An intuitive TUI (Terminal User Interface) spreadsheet written in Go and [BubbleTea](https://github.com/charmbracelet/bubbletea) that leverages the powerful expression language [Expr](https://expr-lang.org/).
+Vizigo is built to feel like a spreadsheet — fast, keyboard-driven, and familiar whether you live in the command line or not.
+
+Written in Go, with help from [BubbleTea](https://github.com/charmbracelet/bubbletea) and the powerful expression language [Expr](https://expr-lang.org/).
 
 ![demo](demo.gif)
 
