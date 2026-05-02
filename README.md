@@ -1,6 +1,6 @@
 # vizigo
 
-> ⚠️ **WORK IN PROGRESS** – This project is incomplete and not ready for general use.
+![GitHub release](https://img.shields.io/github/v/release/oaklandgit/vizigo?include_prereleases)
 
 An intuitive TUI (Terminal User Interface) spreadsheet written in Go and [BubbleTea](https://github.com/charmbracelet/bubbletea) that leverages the powerful expression language [Expr](https://expr-lang.org/).
 
