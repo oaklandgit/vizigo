@@ -70,12 +70,13 @@ String concat: "hello" + " world"
 
 ### TO DO
 
+- open example file with a flag (e.g. vizigo --example or -e)
+- improve help display. Modal window?
+- implement save as: Filename: [ mysheet    ].viz  Path: [ ~/.vizigo/sheets/ ]
 - select ranges visually
 - autosuggest formulae
 - export as csv
 - complete unit tests
-- save as
--
 
 ### DONE
 
