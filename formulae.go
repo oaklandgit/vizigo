@@ -8,6 +8,10 @@ import (
 
 var customFuncRe = regexp.MustCompile(`\b(sum|product|max|min|average|count)\(([^()]*)\)`)
 
+func formatNumber(f float64) string {
+	return strconv.FormatFloat(f, 'g', 10, 64)
+}
+
 // evaluateCustomFunctions replaces calls to our aggregation functions with
 // their computed values. Applied repeatedly so nested calls resolve inside-out.
 func evaluateCustomFunctions(expression string) string {
@@ -46,7 +50,7 @@ func evaluateCustomFunctions(expression string) string {
 			case "count":
 				result = count(args...)
 			}
-			return strconv.FormatFloat(result, 'f', -1, 64)
+			return formatNumber(result)
 		})
 
 		if next == expression {

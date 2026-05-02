@@ -12,8 +12,9 @@ import (
 	"github.com/expr-lang/expr"
 )
 
-var funcNameRe  = regexp.MustCompile(`\b([A-Za-z]+)\s*\(`)
-var intLiteralRe = regexp.MustCompile(`\b\d+(\.\d+)?\b`)
+var funcNameRe    = regexp.MustCompile(`\b([A-Za-z]+)\s*\(`)
+var intLiteralRe  = regexp.MustCompile(`\b\d+(\.\d+)?\b`)
+var bareDecimalRe = regexp.MustCompile(`(^|[^0-9])(\.\d+)`)
 
 type sheet struct {
 	filename 	string
@@ -95,6 +96,7 @@ func (s *sheet) evaluate(content string) (string, error) {
 	rewritten = funcNameRe.ReplaceAllStringFunc(rewritten, func(m string) string {
 		return strings.ToLower(m[:len(m)-1]) + "("
 	})
+	rewritten = bareDecimalRe.ReplaceAllString(rewritten, "${1}0${2}")
 	rewritten = intLiteralRe.ReplaceAllStringFunc(rewritten, func(m string) string {
 		if strings.Contains(m, ".") {
 			return m
@@ -111,6 +113,9 @@ func (s *sheet) evaluate(content string) (string, error) {
 		return errorText, fmt.Errorf("nil result")
 	}
 
+	if f, ok := result.(float64); ok {
+		return formatNumber(f), nil
+	}
 	return fmt.Sprint(result), nil
 }
 
