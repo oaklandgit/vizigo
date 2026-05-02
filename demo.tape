@@ -34,6 +34,7 @@ Type@150ms "1500"
 Enter
 Sleep 250ms
 Left 2
+Sleep 400ms
 
 # Row 4: Groceries
 Type "Groceries"
@@ -46,6 +47,7 @@ Type@150ms "423"
 Enter
 Sleep 150ms
 Left 2
+Sleep 400ms
 
 # Row 5: Utilities
 Type "Utilities"
@@ -58,48 +60,43 @@ Type@150ms "134"
 Enter
 Sleep 250ms
 Left 2
+Sleep 400ms
 
-# Row 6: Transport
-Type "Transport"
-Tab
-Sleep 150ms
-Type@120ms "80"
-Tab
-Sleep 150ms
-Type@120ms "65"
-Enter
-Sleep 150ms
-Left 2
-
-# Rows 7-8 are empty — skip to row 9
+# Rows 6-7 are empty — skip to row 8
 Down
 Down
 
-# Row 9: Totals
+# Row 8: Totals
 Type "Total"
 Tab
 Sleep 150ms
-Type@120ms "=SUM(B3:B6)"
+Type@120ms "=SUM(B3:B5)"
+Sleep 100ms
 Tab
 Sleep 500ms
-Type@120ms "=SUM(C3:C6)"
+Type@120ms "=SUM(C3:C5)"
+Sleep 110ms
 Enter
 Sleep 500ms
 Left 2
 Down
 
-# Row 11: Over budget?
+# Row 10: Over budget?
 Type "Over budget?"
 Tab
-Sleep 150ms
-Type@160ms `=C9>B9 ? "yes" : "no"`
+Sleep 250ms
+Type@200ms `=C8>B8 ? "yes" : "no"`
+Sleep 200ms
 Enter
 Sleep 500ms
 
 # Land on the result
 Up
 Right
+Sleep 1s
+Down
 Sleep 4s
+
 
 # VHS documentation
 #
