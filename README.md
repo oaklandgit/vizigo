@@ -1,6 +1,6 @@
 # vizigo
 
-![GitHub release](https://img.shields.io/github/v/release/oaklandgit/vizigo?include_prereleases)
+![GitHub release](https://img.shields.io/github/v/release/oaklandgit/vizigo?include_prereleases&cacheSeconds=300)
 
 Vizigo is built to feel like a spreadsheet — fast, keyboard-driven, and familiar whether you live in the command line or not.
 
