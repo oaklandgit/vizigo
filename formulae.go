@@ -6,7 +6,34 @@ import (
 	"regexp"
 )
 
-var customFuncRe = regexp.MustCompile(`\b(sum|product|max|min|average|count)\(([^()]*)\)`)
+// Arguments may contain quoted strings (text cells), which can hold parens or commas.
+var customFuncRe = regexp.MustCompile(`\b(sum|product|max|min|average|count)\(((?:[^()"']|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')*)\)`)
+
+// blankCell stands in for a referenced empty cell. Aggregate functions skip it,
+// as spreadsheets do; anywhere else it becomes 0.
+const blankCell = "_blank_"
+
+// splitArgs splits a comma-separated argument list, ignoring commas inside quotes.
+func splitArgs(argsStr string) []string {
+	var args []string
+	start := 0
+	var quote byte
+	for i := 0; i < len(argsStr); i++ {
+		c := argsStr[i]
+		switch {
+		case quote != 0 && c == '\\':
+			i++
+		case quote != 0 && c == quote:
+			quote = 0
+		case quote == 0 && (c == '"' || c == '\''):
+			quote = c
+		case quote == 0 && c == ',':
+			args = append(args, argsStr[start:i])
+			start = i + 1
+		}
+	}
+	return append(args, argsStr[start:])
+}
 
 func formatNumber(f float64) string {
 	return strconv.FormatFloat(f, 'g', 10, 64)
@@ -23,16 +50,28 @@ func evaluateCustomFunctions(expression string) string {
 			}
 			name, argsStr := parts[1], parts[2]
 
+			// Like spreadsheets, only numbers count: blanks, text and booleans
+			// are skipped, but an error anywhere in the range propagates.
 			var args []float64
-			for _, a := range strings.Split(argsStr, ",") {
-				f, err := strconv.ParseFloat(strings.TrimSpace(a), 64)
+			for _, a := range splitArgs(argsStr) {
+				a = strings.TrimSpace(a)
+				switch {
+				case a == "" || a == blankCell || a == "true" || a == "false":
+					continue
+				case a[0] == '"' || a[0] == '\'':
+					continue
+				}
+				f, err := strconv.ParseFloat(a, 64)
 				if err != nil {
 					return errorText
 				}
 				args = append(args, f)
 			}
 			if len(args) == 0 {
-				return errorText
+				if name == "average" {
+					return errorText // no numbers to average (#DIV/0! in other spreadsheets)
+				}
+				return "0.0"
 			}
 
 			var result float64

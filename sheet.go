@@ -68,7 +68,7 @@ func (s *sheet) replaceCellReferences(expr string) string {
 		cell := s.cells[v]
 		content := cell.getRawContent()
 		if content == "" {
-			return "0.0"
+			return blankCell
 		}
 
 		s.evaluating[v] = true
@@ -135,6 +135,9 @@ func (s *sheet) evaluate(content string) (string, error) {
 		})
 	})
 	rewritten = evaluateCustomFunctions(rewritten)
+	rewritten = mapOutsideStrings(rewritten, func(code string) string {
+		return strings.ReplaceAll(code, blankCell, "0.0")
+	})
 	result, err := expr.Eval(rewritten, nil)
 
 	if err != nil {
