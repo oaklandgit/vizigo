@@ -74,8 +74,27 @@ func (s *sheet) replaceCellReferences(expr string) string {
 		s.evaluating[v] = true
 		val, _ := s.evaluate(content)
 		delete(s.evaluating, v)
-		return val
+		return asOperand(val)
 	})
+}
+
+// asOperand turns a computed cell value into something expr can parse:
+// numbers stay numeric, text becomes a quoted string literal.
+func asOperand(val string) string {
+	if val == errorText || val == "true" || val == "false" {
+		return val
+	}
+	if numberLiteralRe.MatchString(val) {
+		if f, err := strconv.ParseFloat(val, 64); err == nil {
+			// 'f' avoids exponents like 1.5e+10, which the literal rewrites would mangle.
+			num := strconv.FormatFloat(f, 'f', -1, 64)
+			if f < 0 {
+				return " " + num // so A1-A2 becomes "10- -3", not "10--3"
+			}
+			return num
+		}
+	}
+	return strconv.Quote(val)
 }
 
 // expand range references, then replace with computed values
@@ -101,16 +120,19 @@ func (s *sheet) evaluate(content string) (string, error) {
 	}
 
 	exprBody := content[1:] // Remove the leading '=' sign
-	rewritten := s.rewriteExpression(exprBody)
-	rewritten = funcNameRe.ReplaceAllStringFunc(rewritten, func(m string) string {
-		return strings.ToLower(m[:len(m)-1]) + "("
-	})
-	rewritten = bareDecimalRe.ReplaceAllString(rewritten, "${1}0${2}")
-	rewritten = intLiteralRe.ReplaceAllStringFunc(rewritten, func(m string) string {
-		if strings.Contains(m, ".") {
-			return m
-		}
-		return m + ".0"
+	// Rewrites apply only outside string literals, so "Item 5" stays "Item 5".
+	rewritten := mapOutsideStrings(exprBody, s.rewriteExpression)
+	rewritten = mapOutsideStrings(rewritten, func(code string) string {
+		code = funcNameRe.ReplaceAllStringFunc(code, func(m string) string {
+			return strings.ToLower(m[:len(m)-1]) + "("
+		})
+		code = bareDecimalRe.ReplaceAllString(code, "${1}0${2}")
+		return intLiteralRe.ReplaceAllStringFunc(code, func(m string) string {
+			if strings.Contains(m, ".") {
+				return m
+			}
+			return m + ".0"
+		})
 	})
 	rewritten = evaluateCustomFunctions(rewritten)
 	result, err := expr.Eval(rewritten, nil)

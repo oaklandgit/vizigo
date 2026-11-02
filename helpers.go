@@ -149,6 +149,37 @@ func expandRangeReferences(expr string) string {
 }
 
 
+// mapOutsideStrings applies fn to the parts of an expression that are not
+// inside '...' or "..." string literals; literals are kept verbatim.
+func mapOutsideStrings(expr string, fn func(string) string) string {
+	var out strings.Builder
+	start := 0
+	for i := 0; i < len(expr); i++ {
+		quote := expr[i]
+		if quote != '"' && quote != '\'' {
+			continue
+		}
+		out.WriteString(fn(expr[start:i]))
+		j := i + 1
+		for j < len(expr) && expr[j] != quote {
+			if expr[j] == '\\' {
+				j++
+			}
+			j++
+		}
+		if j >= len(expr) {
+			// Unterminated literal: leave the rest alone and let expr report it.
+			out.WriteString(expr[i:])
+			return out.String()
+		}
+		out.WriteString(expr[i : j+1])
+		i = j
+		start = j + 1
+	}
+	out.WriteString(fn(expr[start:]))
+	return out.String()
+}
+
 // CALCULATION HELPERS /////////
 
 // func maxPrecision(operands []float64) int {
