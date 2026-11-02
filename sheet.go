@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -15,6 +16,7 @@ import (
 var funcNameRe    = regexp.MustCompile(`\b([A-Za-z]+)\s*\(`)
 var intLiteralRe  = regexp.MustCompile(`\b\d+(\.\d+)?\b`)
 var bareDecimalRe = regexp.MustCompile(`(^|[^0-9])(\.\d+)`)
+var numberLiteralRe = regexp.MustCompile(`^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$`)
 
 type sheet struct {
 	filename 	string
@@ -88,6 +90,13 @@ func (s *sheet) evaluate(content string) (string, error) {
 		return "", nil
 	}
 	if content[0] != '=' {
+		// Like other spreadsheets, plain numbers display normalized:
+		// "1.50" -> "1.5", "007" -> "7", "2.0" -> "2". Text passes through.
+		if trimmed := strings.TrimSpace(content); numberLiteralRe.MatchString(trimmed) {
+			if f, err := strconv.ParseFloat(trimmed, 64); err == nil {
+				return formatNumber(f), nil
+			}
+		}
 		return content, nil
 	}
 
